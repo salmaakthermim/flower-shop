@@ -4,6 +4,7 @@ import AboutHero from './AboutHero';
 import Partners from './Partners';
 import HistorySection from './HistorySection';
 import MasterClassSection from './MasterClassSection';
+import MeetOurTeam from './MeetOurTeam';
 
 const AboutHome = () => {
     return (
@@ -13,6 +14,7 @@ const AboutHome = () => {
             <Partners></Partners>
             <HistorySection></HistorySection>
             <MasterClassSection></MasterClassSection>
+            <MeetOurTeam></MeetOurTeam>
         </div>
     );
 };
