@@ -20,7 +20,7 @@ const Navbar = () => {
           <NavItem to="/shop" text="SHOP" />
           <NavItem to="/contacts" text="Contacts" />
           <NavItem to="/about" text="AboutUs" />
-          <NavItem to="/elements" text="ELEMENTS" />
+          <NavItem to="/login" text="Login" />
         </nav>
 
         {/* Mobile Icon */}

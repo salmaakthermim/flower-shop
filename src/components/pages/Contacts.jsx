@@ -3,14 +3,23 @@ import React from 'react';
 
 const Contacts = () => {
   return (
-    <div className="bg-green-100   bg-[url('/public/pngtree-flower-petals-flowers-plant-spring-watercolor-pink-background-image_16932754.jpg')] bg-cover bg-center">
-      <div className="max-w-4xl mx-auto py-20 px-6 text-center">
-        <h1 className="text-5xl font-serif text-gray-800 mb-4">Contacts</h1>
-        <nav className="text-gray-600 text-sm">
-          <span className="hover:underline cursor-pointer">Home</span> &gt; <span className="font-semibold">Contacts</span>
-        </nav>
-      </div>
+    <section className="relative w-full h-[260px] bg-[#c9cbb5] overflow-hidden">
+        
+    {/* Background floral pattern (optional image) */}
+    <div className="absolute inset-0 bg-[url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOCifMr_agLUjm47kuwyhcDJCNcx_vqLkFbg&s')] bg-cover bg-center opacity-20"></div>
+
+    {/* Content */}
+    <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+      <h1 className="text-4xl md:text-5xl font-serif text-white mb-3">
+        Contact Us
+      </h1>
+
+      <p className="text-sm text-white/80">
+        Home <span className="mx-1">›</span>
+        <span className="underline">contact us</span>
+      </p>
     </div>
+  </section>
   );
 };
 
