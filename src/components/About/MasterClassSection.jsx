@@ -80,15 +80,16 @@ const MasterClassSection = () => {
           </button>
         </div>
         
-        <div className="w-full md:w-1/2 flex justify-center">
-        <div className="overflow-hidden rounded-tl-[50px] rounded-br-[50px] border border-gray-200">
-          <img
-            src="https://i.ibb.co.com/xqGWbTbh/Capture.png" // replace with your image path
-            alt="Flower arrangement"
-            className="w-full h-full object-cover"
-          />
+         {/* RIGHT IMAGE */}
+         <div className="flex ml-40 relative w-[300px] md:w-[380px] h-[520px]  justify-center rounded-[180px] border border-[#ddd8cc]">
+          <div className="w-[260px] md:w-[330px] h-[480px] rounded-[160px] mt-4 overflow-hidden">
+            <img
+              src="https://cdn.pixabay.com/photo/2017/10/05/06/46/asia-2818564_1280.jpg"
+              alt="Flower Studio"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
-      </div>
 
       </div>
     </section>
