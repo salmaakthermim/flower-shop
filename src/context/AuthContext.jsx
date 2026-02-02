@@ -1,14 +1,12 @@
+
 import { createContext, useContext } from "react";
 import {
   createUserWithEmailAndPassword,
- 
   signInWithEmailAndPassword,
- 
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { auth , } from "../Firebase/firebase.config";
-// import { auth, googleProvider } from "../firebase.config";
+import { auth, googleProvider } from "../Firebase/firebase.config";
 
 const AuthContext = createContext();
 
@@ -19,7 +17,9 @@ export const AuthProvider = ({ children }) => {
   const loginUser = (email, password) =>
     signInWithEmailAndPassword(auth, email, password);
 
-  const googleLogin = () => signInWithPopup(auth );
+  // ✅ FIXED GOOGLE LOGIN
+  const googleLogin = () =>
+    signInWithPopup(auth, googleProvider);
 
   const logoutUser = () => signOut(auth);
 

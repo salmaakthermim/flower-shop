@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import toast from "react-hot-toast";
 
 const Login = () => {
   const { loginUser, googleLogin } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -14,15 +15,17 @@ const Login = () => {
     loginUser(email, password)
       .then(() => {
         toast.success("Login successful 🌷");
+        navigate("/dashboard");
       })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+      .catch((err) => toast.error(err.message));
   };
 
   const handleGoogle = () => {
     googleLogin()
-      .then(() => toast.success("Google Login Successful 🌸"))
+      .then(() => {
+        toast.success("Google Login Successful 🌸");
+        navigate("/dashboard");
+      })
       .catch((err) => toast.error(err.message));
   };
 
@@ -50,12 +53,15 @@ const Login = () => {
           <input name="email" type="email" placeholder="Email" required className="w-full px-4 py-2 border rounded-lg" />
           <input name="password" type="password" placeholder="Password" required className="w-full px-4 py-2 border rounded-lg" />
 
-          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full bg-pink-500 text-white py-2 rounded-lg">
+          <motion.button className="w-full bg-pink-500 text-white py-2 rounded-lg">
             Login
           </motion.button>
         </form>
 
-        <button onClick={handleGoogle} className="w-full mt-4 border py-2 rounded-lg flex justify-center gap-2 hover:bg-gray-100">
+        <button
+          onClick={handleGoogle}
+          className="w-full mt-4 border py-2 rounded-lg flex justify-center gap-2"
+        >
           <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" className="w-5" />
           Login with Google
         </button>
