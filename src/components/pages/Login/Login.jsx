@@ -1,30 +1,41 @@
 import { useState } from "react";
 import { loginUser } from "../../../api/auth";
-import DashboardRedirect from "../DashboardRedirect";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Pass both email and password to backend
       const loggedUser = await loginUser({ email, password });
 
-      if (!loggedUser) {
-        throw new Error("Invalid credentials");
+      if (!loggedUser || !loggedUser.role) {
+        throw new Error("User role not found");
       }
 
-      setUser(loggedUser);
+      // ✅ role save
+      localStorage.setItem("role", loggedUser.role);
+
       toast.success("Login successful 🌷");
+
+      // ✅ role অনুযায়ী redirect
+      if (loggedUser.role === "admin") {
+        navigate("/dashboard/admin", { replace: true });
+      } else if (loggedUser.role === "customer") {
+        navigate("/dashboard/customer", { replace: true });
+      } else {
+        navigate("/dashboard/guest", { replace: true });
+      }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error(err.message || "Login failed ❌");
     } finally {
       setLoading(false);
@@ -80,9 +91,6 @@ export default function Login() {
             Create Account
           </a>
         </p>
-
-        {/* Redirect after successful login */}
-        {user && <DashboardRedirect user={user} />}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("customer");
+  const [avatar, setAvatar] = useState(""); // নতুন: Avatar URL
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -18,17 +19,15 @@ export default function Register() {
 
     try {
       // API call
-      const newUser = await registerUser({ name, email, password, role });
-      toast.success("Registration successful 🌸");
+      const newUser = await registerUser({ name, email, password, role, avatar });
 
-      // Role অনুযায়ী redirect
-      if (newUser.role === "admin") {
-        navigate("/dashboard/admin");
-      } else if (newUser.role === "customer") {
-        navigate("/dashboard/customer");
-      } else {
-        navigate("/dashboard/guest");
-      }
+      // ✅ localStorage-এ save করা
+      localStorage.setItem("role", newUser.role);
+      localStorage.setItem("name", newUser.name);
+      localStorage.setItem("avatar", newUser.avatar || avatar); // fallback to input URL
+
+      toast.success("Registration successful 🌸");
+      navigate("/dashboard");
     } catch (err) {
       console.log(err);
       toast.error("Registration failed ❌");
@@ -77,6 +76,15 @@ export default function Register() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+          />
+
+          {/* নতুন: Avatar URL input */}
+          <input
+            type="text"
+            placeholder="Avatar URL (image link)"
+            value={avatar}
+            onChange={(e) => setAvatar(e.target.value)}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
           />
 
