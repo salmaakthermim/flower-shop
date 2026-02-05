@@ -8,6 +8,7 @@ import SpecialFlowerCollections from '../../components/SpecialFlowerCollections'
 import NaturalFresh from '../../components/NaturalFresh';
 import FlowerGallery from '../../components/FlowerGallery';
 import Gallery from '../../components/Gallery';
+import NewFlowers from '../../components/NewFlowers';
 
 const Home = () => {
     return (
@@ -18,6 +19,7 @@ const Home = () => {
             <AboutSection></AboutSection>
             <HeroSection></HeroSection>
             <ServicesSection></ServicesSection>
+            <NewFlowers></NewFlowers>
             <SpecialFlowerCollections></SpecialFlowerCollections>
             <NaturalFresh></NaturalFresh>
             <FlowerGallery></FlowerGallery>
