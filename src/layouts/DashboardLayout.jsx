@@ -34,14 +34,14 @@ const DashboardLayout = () => {
               </NavLink>
 
               <NavLink
-                to="/dashboard/manage-products"
+                to="/dashboard/admin/manage-flowers"
                 className="btn w-full py-2 rounded-lg hover:bg-pink-100"
               >
                 📦 Manage Products
               </NavLink>
 
               <NavLink
-                to="/dashboard/all-orders"
+                to="/dashboard/admin/all-orders"
                 className="btn w-full py-2 rounded-lg hover:bg-pink-100"
               >
                 🛒 All Orders

@@ -11,23 +11,25 @@ import AboutHome from "../components/About/AboutHome";
 import Login from "../components/pages/Login/login";
 import Register from "../components/pages/Register/register";
 
-// dashboard pages
+// dashboard common
 import DashboardHome from "../components/pages/Dashboard/DashboardHome";
 import Profile from "../components/pages/Dashboard/Profile";
 
+// role dashboards
 import AdminDashboard from "../components/pages/Dashboard/AdminDashboard/AdminDashboard";
 import CustomerDashboard from "../components/pages/Dashboard/CustomerDashboard/CustomerDashboard";
 import GuestDashboard from "../components/pages/Dashboard/GuestDashboard/GuestDashboard";
 
-// new: AddFlower page
-// import AddFlower from "../components/admin/AddFlower";
+// admin pages
+import AddFlower from "../components/pages/Dashboard/AdminDashboard/AddFlower";
+import ManageFlowers from "../components/pages/Dashboard/AdminDashboard/ManageFlowers";
 
 // routes
 import PrivateRoute from "../routes/PrivateRoute";
-import AddFlower from "../components/pages/Dashboard/AdminDashboard/AddFlower";
+import AllOrders from "../components/pages/Dashboard/AdminDashboard/AllOrders";
 
 /* ==============================
-   Role Helper & Redirect
+   Role Helper
 ================================ */
 const getRole = () => {
   return localStorage.getItem("role") || "guest";
@@ -45,6 +47,7 @@ const DashboardRedirect = () => {
    Router
 ================================ */
 const router = createBrowserRouter([
+  // ================= PUBLIC =================
   {
     path: "/",
     element: <MainLayout />,
@@ -57,6 +60,7 @@ const router = createBrowserRouter([
     ],
   },
 
+  // ================= DASHBOARD =================
   {
     path: "/dashboard",
     element: (
@@ -65,16 +69,27 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
-      // /dashboard → role অনুযায়ী redirect
+      // /dashboard
       { index: true, element: <DashboardRedirect /> },
 
       // common
       { path: "profile", element: <Profile /> },
 
-      // role based dashboards
-      { path: "admin", element: <AdminDashboard /> },
-      { path: "admin/add-flower", element: <AddFlower /> }, // ✅ Add Flower route
+      // ---------- ADMIN ----------
+      {
+        path: "admin",
+        children: [
+          { index: true, element: <AdminDashboard /> },
+          { path: "add-flower", element: <AddFlower /> },
+          { path: "manage-flowers", element: <ManageFlowers /> },
+          { path: "all-orders", element: <AllOrders></AllOrders> },
+        ],
+      },
+
+      // ---------- CUSTOMER ----------
       { path: "customer", element: <CustomerDashboard /> },
+
+      // ---------- GUEST ----------
       { path: "guest", element: <GuestDashboard /> },
     ],
   },
