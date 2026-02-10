@@ -29,6 +29,8 @@ import PrivateRoute from "../routes/PrivateRoute";
 import AllOrders from "../components/pages/Dashboard/AdminDashboard/AllOrders";
 import ManageUsers from "../components/pages/Dashboard/AdminDashboard/ManageUsers";
 import OrderSuccess from "../components/OrderSuccess";
+import MyOrders from "../components/pages/Dashboard/CustomerDashboard/MyOrders";
+import MyCard from "../components/pages/Dashboard/CustomerDashboard/MyCard";
 
 /* ==============================
    Role Helper
@@ -91,7 +93,14 @@ const router = createBrowserRouter([
       },
 
       // ---------- CUSTOMER ----------
-      { path: "customer", element: <CustomerDashboard /> },
+      {
+        path: "customer",
+        children: [
+          { index: true, element: <CustomerDashboard /> },
+          { path: "my-orders", element: <MyOrders /> },
+          { path: "my-cards", element: <MyCard></MyCard> },
+        ],
+      },
 
       // ---------- GUEST ----------
       { path: "guest", element: <GuestDashboard /> },

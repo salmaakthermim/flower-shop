@@ -60,14 +60,14 @@ const DashboardLayout = () => {
           {role === "customer" && (
             <>
               <NavLink
-                to="/dashboard/my-orders"
+                to="/dashboard/customer/my-orders"
                 className="btn w-full py-2 rounded-lg hover:bg-pink-100"
               >
                 🛍 My Orders
               </NavLink>
 
               <NavLink
-                to="/dashboard/cart"
+                to="/dashboard/customer/my-cards"
                 className="btn w-full py-2 rounded-lg hover:bg-pink-100"
               >
                 🛒 My Cart

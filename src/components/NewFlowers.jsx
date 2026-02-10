@@ -67,52 +67,45 @@ export default function NewFlowers() {
 
 // ================= PLACE ORDER =================
 const handleOrder = async () => {
-  if (!name || !email || !phone) {
-    alert("Please fill all required fields");
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user?.email) {
+    alert("Please login first");
     return;
   }
 
   const orderData = {
-    items: cart,
-    name,
-    email,
-    phone,
-    comment,
-    total,
-    status: "pending",
-    createdAt: new Date(),
+    customer: {
+      name,
+      email: user.email,
+      phone,
+    },
+    products: cart.map(item => ({
+      productId: item._id,
+      name: item.name,
+      price: item.price,
+      quantity: item.qty,
+      image: item.image,
+    })),
+    totalPrice: total,
+    paymentMethod: "COD",
   };
 
-  try {
-    const res = await fetch("http://localhost:5000/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderData),
-    });
+  const res = await fetch("http://localhost:5000/orders", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(orderData),
+  });
 
-    const result = await res.json();
+  const data = await res.json();
 
-    // ✅ Check backend response
-    if (result.order && result.order._id) {
-      // Reset cart and form
-      setCart([]);
-      setName("");
-      setEmail("");
-      setPhone("");
-      setComment("");
-      setOpen(false);
-
-      // Navigate to OrderSuccess page with real order id
-      navigate(`/order-success/${result.order._id}`);
-    } else {
-      alert("Failed to place order");
-      console.log(result);
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Server error while placing order");
+  if (data?.order?._id) {
+    setCart([]);
+    setOpen(false);
+    navigate(`/order-success/${data.order._id}`);
   }
 };
+
 
   return (
     <section className="bg-[#f7f3ee] py-16 relative">
