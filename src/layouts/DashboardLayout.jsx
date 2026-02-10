@@ -48,7 +48,7 @@ const DashboardLayout = () => {
               </NavLink>
 
               <NavLink
-                to="/dashboard/users"
+                to="/dashboard/admin/manage-users"
                 className="btn w-full py-2 rounded-lg hover:bg-pink-100"
               >
                 👥 Manage Users

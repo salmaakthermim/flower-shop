@@ -27,6 +27,8 @@ import ManageFlowers from "../components/pages/Dashboard/AdminDashboard/ManageFl
 // routes
 import PrivateRoute from "../routes/PrivateRoute";
 import AllOrders from "../components/pages/Dashboard/AdminDashboard/AllOrders";
+import ManageUsers from "../components/pages/Dashboard/AdminDashboard/ManageUsers";
+import OrderSuccess from "../components/OrderSuccess";
 
 /* ==============================
    Role Helper
@@ -57,6 +59,7 @@ const router = createBrowserRouter([
       { path: "about", element: <AboutHome /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
+      { path: "order-success/:id", element: <OrderSuccess /> },
     ],
   },
 
@@ -83,6 +86,7 @@ const router = createBrowserRouter([
           { path: "add-flower", element: <AddFlower /> },
           { path: "manage-flowers", element: <ManageFlowers /> },
           { path: "all-orders", element: <AllOrders></AllOrders> },
+          { path: "manage-users", element: <ManageUsers /> },
         ],
       },
 
