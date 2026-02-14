@@ -1,30 +1,38 @@
 import { useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import "swiper/css";
-import "swiper/css/navigation";
+import NewFlowers from "./NewFlowers";
 
-export default function NewFlowers() {
-  const [flowers, setFlowers] = useState([]);
+export default function FlowerDetails() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [flower, setFlower] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [qty, setQty] = useState(1);
+  const [selectedImage, setSelectedImage] = useState("");
+
+  // CART STATES
   const [cart, setCart] = useState([]);
   const [open, setOpen] = useState(false);
   const [loadingCart, setLoadingCart] = useState(false);
 
+  // ORDER STATES
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [comment, setComment] = useState("");
 
-  const navigate = useNavigate();
-
-  // ================= FETCH FLOWERS =================
+  // ================= LOAD FLOWER =================
   useEffect(() => {
-    fetch("http://localhost:5000/flowers")
+    fetch(`http://localhost:5000/flowers/${id}`)
       .then((res) => res.json())
-      .then((data) => setFlowers(data));
-  }, []);
+      .then((data) => {
+        setFlower(data);
+        setSelectedImage(data.image);
+        setLoading(false);
+      });
+  }, [id]);
 
   // ================= LOAD USER =================
   useEffect(() => {
@@ -33,13 +41,12 @@ export default function NewFlowers() {
     if (user?.name) setName(user.name);
   }, []);
 
-  // ================= LOAD CART FROM DB =================
+  // ================= LOAD CART =================
   const loadCart = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user?.email) return;
 
     setLoadingCart(true);
-
     const res = await fetch(
       `http://localhost:5000/cart/${user.email}`
     );
@@ -49,11 +56,8 @@ export default function NewFlowers() {
   };
 
   // ================= ADD TO CART =================
-  const addToCart = async (flower) => {
+  const addToCart = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    console.log("Logged user:", user);
-
-
     if (!user?.email) {
       alert("Please login first");
       return;
@@ -61,33 +65,29 @@ export default function NewFlowers() {
 
     await fetch("http://localhost:5000/cart", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: user.email,
         productId: flower._id,
         name: flower.name,
         price: flower.price,
-        image: flower.image,
-        quantity: 1,
+        image: selectedImage,
+        quantity: qty,
       }),
     });
 
+    await loadCart();
     setOpen(true);
-    loadCart();
   };
 
   // ================= UPDATE QTY =================
-  const updateQty = async (id, qty) => {
-    if (qty < 1) return;
+  const updateQty = async (id, quantity) => {
+    if (quantity < 1) return;
 
     await fetch(`http://localhost:5000/cart/${id}`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ quantity: qty }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ quantity }),
     });
 
     loadCart();
@@ -98,11 +98,9 @@ export default function NewFlowers() {
     await fetch(`http://localhost:5000/cart/${id}`, {
       method: "DELETE",
     });
-
     loadCart();
   };
 
-  // ================= TOTAL =================
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -111,11 +109,6 @@ export default function NewFlowers() {
   // ================= PLACE ORDER =================
   const handleOrder = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-
-    if (!user?.email) {
-      alert("Please login first");
-      return;
-    }
 
     if (!name || !phone) {
       alert("Please fill name and phone");
@@ -144,20 +137,12 @@ export default function NewFlowers() {
 
     const res = await fetch("http://localhost:5000/orders", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
     });
 
     const data = await res.json();
 
-    if (!res.ok) {
-      alert(data.message || "Order failed");
-      return;
-    }
-
-    // Clear cart after order
     await fetch(
       `http://localhost:5000/cart/clear/${user.email}`,
       { method: "DELETE" }
@@ -165,55 +150,96 @@ export default function NewFlowers() {
 
     setCart([]);
     setOpen(false);
-    setPhone("");
-    setComment("");
-
     navigate(`/order-success/${data.order._id}`);
   };
 
-  return (
-    <section className="bg-[#f7f3ee] py-16 relative">
-      <div className="max-w-7xl mx-auto px-4">
-        <Swiper
-          modules={[Navigation]}
-          navigation
-          spaceBetween={30}
-          breakpoints={{
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 4 },
-          }}
-        >
-          {flowers.map((flower) => (
-            <SwiperSlide key={flower._id}>
-              <motion.div
-                whileHover={{ y: -8 }}
-                className="text-center cursor-pointer"
-                onClick={() => navigate(`/flower/${flower._id}`)}
-              >
-                <img
-                  src={flower.image}
-                  alt={flower.name}
-                  className="mx-auto h-64 object-contain"
-                />
-                <h3 className="mt-4 font-semibold">{flower.name}</h3>
-                <p>${flower.price}</p>
-              </motion.div>
+  if (loading)
+    return <div className="text-center py-20">Loading...</div>;
 
+  return (
+    <div>
+    <section className="bg-[#f4efe9] min-h-screen py-20">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 px-6">
+
+        {/* LEFT SIDE */}
+        <div>
+          <img
+            src={selectedImage}
+            alt={flower.name}
+            className="w-full max-h-[500px] object-contain"
+          />
+
+          {/* THUMBNAIL */}
+          <div className="mt-6">
+            <img
+              src={flower.image}
+              onClick={() => setSelectedImage(flower.image)}
+              className={`w-24 h-24 object-cover border cursor-pointer ${
+                selectedImage === flower.image
+                  ? "border-black"
+                  : "border-gray-300"
+              }`}
+            />
+          </div>
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div>
+          <p className="text-green-600 mb-2">In stock</p>
+
+          <h1 className="text-4xl font-serif mb-3">
+            {flower.name}
+          </h1>
+
+          <p className="text-xl text-[#7a745e] mb-6">
+            ${flower.price} USD
+          </p>
+
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex border">
               <button
-                onClick={(e) => {
-                  e.stopPropagation(); // 🔥 Important (details page না যেতে)
-                  addToCart(flower);
-                }}
-                className="mt-4 ml-20 px-6 py-2 border hover:bg-gray-800 hover:text-white"
+                onClick={() =>
+                  setQty((prev) =>
+                    prev > 1 ? prev - 1 : 1
+                  )
+                }
+                className="px-3"
               >
-                ADD TO CART
+                -
               </button>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+              <span className="px-4 border-x">
+                {qty}
+              </span>
+              <button
+                onClick={() =>
+                  setQty((prev) => prev + 1)
+                }
+                className="px-3"
+              >
+                +
+              </button>
+            </div>
+
+            <button
+              onClick={addToCart}
+              className="bg-[#7a745e] text-white px-8 py-3 hover:bg-black transition"
+            >
+              ADD TO CART
+            </button>
+          </div>
+
+          <hr className="mb-6" />
+
+          <h3 className="font-semibold mb-2">
+            DESCRIPTION
+          </h3>
+          <p className="text-gray-600 leading-relaxed">
+            {flower.description}
+          </p>
+        </div>
       </div>
 
-      {/* CART MODAL */}
+      {/* ================= CART MODAL ================= */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -253,37 +279,19 @@ export default function NewFlowers() {
                     />
                     <div className="flex-1">
                       <p>{item.name}</p>
-                      <div className="flex gap-2 mt-1">
-                        <button
-                          onClick={() =>
-                            updateQty(
-                              item._id,
-                              item.quantity - 1
-                            )
-                          }
-                        >
-                          -
-                        </button>
+                      <div className="flex gap-2">
+                        <button onClick={() =>
+                          updateQty(item._id, item.quantity - 1)
+                        }>-</button>
                         <span>{item.quantity}</span>
-                        <button
-                          onClick={() =>
-                            updateQty(
-                              item._id,
-                              item.quantity + 1
-                            )
-                          }
-                        >
-                          +
-                        </button>
+                        <button onClick={() =>
+                          updateQty(item._id, item.quantity + 1)
+                        }>+</button>
                       </div>
                     </div>
-                    <button
-                      onClick={() =>
-                        removeItem(item._id)
-                      }
-                    >
-                      🗑
-                    </button>
+                    <button onClick={() =>
+                      removeItem(item._id)
+                    }>🗑</button>
                   </div>
                 ))
               )}
@@ -292,6 +300,7 @@ export default function NewFlowers() {
                 Total: ${total}
               </p>
 
+              {/* ORDER FORM */}
               <div className="mt-6 space-y-3">
                 <input
                   value={name}
@@ -335,5 +344,7 @@ export default function NewFlowers() {
         )}
       </AnimatePresence>
     </section>
+    <NewFlowers></NewFlowers>
+    </div>
   );
 }
