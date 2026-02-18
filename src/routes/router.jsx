@@ -33,6 +33,7 @@ import MyOrders from "../components/pages/Dashboard/CustomerDashboard/MyOrders";
 import MyCard from "../components/pages/Dashboard/CustomerDashboard/MyCard";
 import FlowerDetails from "../components/FlowerDetails";
 import AllFlowers from "../components/pages/AllFlowers";
+import Page from "../components/Page";
 
 /* ==============================
    Role Helper
@@ -61,6 +62,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "contacts", element: <ContactsHome /> },
       { path: "about", element: <AboutHome /> },
+      { path: "/shop", element: <Page></Page> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
       { path: "order-success/:id", element: <OrderSuccess /> },

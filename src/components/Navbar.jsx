@@ -37,7 +37,7 @@ const Navbar = () => {
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-10 text-sm tracking-widest font-medium">
           <NavItem to="/" text="HOME" />
-          <NavItem to="/pages" text="PAGES" />
+         
           <NavItem to="/shop" text="SHOP" />
           <NavItem to="/contacts" text="Contacts" />
           <NavItem to="/about" text="AboutUs" />

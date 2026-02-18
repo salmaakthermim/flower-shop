@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { registerUser } from "../../../api/auth";
+import { googleLogin, registerUser } from "../../../api/auth";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { FcGoogle } from "react-icons/fc";
+
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -33,6 +35,30 @@ export default function Register() {
       toast.error("Registration failed ❌");
     } finally {
       setLoading(false);
+    }
+  };
+  const handleGoogleLogin = async () => {
+    try {
+      const loggedUser = await googleLogin();
+
+      if (!loggedUser || !loggedUser.role) {
+        throw new Error("User role not found");
+      }
+
+      localStorage.setItem("role", loggedUser.role);
+
+      toast.success("Google Login Successful 🌸");
+
+      if (loggedUser.role === "admin") {
+        navigate("/dashboard/admin", { replace: true });
+      } else if (loggedUser.role === "customer") {
+        navigate("/dashboard/customer", { replace: true });
+      } else {
+        navigate("/dashboard/guest", { replace: true });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Google Login Failed ❌");
     }
   };
 
@@ -106,6 +132,18 @@ export default function Register() {
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
+        {/* Divider */}
+        <div className="my-4 text-center text-gray-500">OR</div>
+
+
+
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          <FcGoogle size={22} />
+          Continue with Google
+        </button>
 
         <p className="text-center mt-4 text-sm">
           Already have an account?{" "}
