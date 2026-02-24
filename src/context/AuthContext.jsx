@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }) => {
   const registerUser = async (name, email, password, avatar) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
 
-    // update display name & photo
     await updateProfile(result.user, {
       displayName: name,
       photoURL: avatar,
@@ -37,12 +36,28 @@ export const AuthProvider = ({ children }) => {
   const googleLogin = () => signInWithPopup(auth, googleProvider);
 
   // 🔥 Logout
-  const logoutUser = () => signOut(auth);
+  const logoutUser = async () => {
+    localStorage.removeItem("role"); // role clear
+    await signOut(auth);
+  };
 
   // 🔥 Observer
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      if (currentUser) {
+        const role = localStorage.getItem("role") || "customer";
+
+        setUser({
+          uid: currentUser.uid,
+          email: currentUser.email,
+          name: currentUser.displayName,
+          avatar: currentUser.photoURL,
+          role: role,
+        });
+      } else {
+        setUser(null);
+      }
+
       setLoading(false);
     });
 
