@@ -18,7 +18,7 @@ export default function ManageFlowers() {
   // fetch flowers
   const fetchFlowers = async () => {
     try {
-      const res = await fetch("http://localhost:5000/flowers");
+      const res = await fetch("https://flower-shop-server-nu.vercel.app/flowers");
       const data = await res.json();
       setFlowers(data);
     } catch (err) {
@@ -48,7 +48,7 @@ const handleDelete = async (id) => {
     if (!result.isConfirmed) return;
   
     try {
-      const res = await fetch(`http://localhost:5000/flowers/${id}`, {
+      const res = await fetch(`https://flower-shop-server-nu.vercel.app/flowers/${id}`, {
         method: "DELETE",
       });
   
@@ -80,7 +80,7 @@ const handleDelete = async (id) => {
     setUpdating(true);
 
     try {
-      const res = await fetch(`http://localhost:5000/flowers/${editId}`, {
+      const res = await fetch(`https://flower-shop-server-nu.vercel.app/flowers/${editId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, price, image, description }),

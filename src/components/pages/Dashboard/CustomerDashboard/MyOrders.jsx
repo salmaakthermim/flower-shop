@@ -7,7 +7,7 @@ export default function MyOrders() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`http://localhost:5000/orders/customer/${user.email}`)
+    fetch(`https://flower-shop-server-nu.vercel.app/orders/customer/${user.email}`)
       .then(res => res.json())
       .then(data => setOrders(data));
   }, [user]);

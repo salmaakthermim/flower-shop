@@ -1,5 +1,5 @@
 // import axios from "axios";
-// const API = "http://localhost:5000";
+// const API = "https://flower-shop-server-nu.vercel.app";
 
 // // Register
 // export const registerUser = async ({ name, email, password, role }) => {
@@ -36,7 +36,7 @@ import axios from "axios";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../Firebase/firebase.config";
 
-const API = "http://localhost:5000";
+const API = "https://flower-shop-server-nu.vercel.app";
 
 // Register
 export const registerUser = async ({ name, email, password, role }) => {

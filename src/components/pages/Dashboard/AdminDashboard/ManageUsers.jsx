@@ -9,7 +9,7 @@ export default function ManageUsers() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://localhost:5000/users");
+      const res = await fetch("https://flower-shop-server-nu.vercel.app/users");
       const data = await res.json();
       setUsers(data);
     } catch {
@@ -36,7 +36,7 @@ export default function ManageUsers() {
 
     if (!result.isConfirmed) return;
 
-    const res = await fetch(`http://localhost:5000/users/role/${id}`, {
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/users/role/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role }),
@@ -50,7 +50,7 @@ export default function ManageUsers() {
 
   // block / unblock
   const handleStatus = async (id, status) => {
-    const res = await fetch(`http://localhost:5000/users/status/${id}`, {
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/users/status/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
@@ -75,7 +75,7 @@ export default function ManageUsers() {
 
     if (!result.isConfirmed) return;
 
-    const res = await fetch(`http://localhost:5000/users/${id}`, {
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/users/${id}`, {
       method: "DELETE",
     });
 

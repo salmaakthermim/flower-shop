@@ -6,7 +6,7 @@ export default function OrderSuccess() {
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/orders/${id}`)
+    fetch(`https://flower-shop-server-nu.vercel.app/orders/${id}`)
       .then(res => res.json())
       .then(data => setOrder(data));
   }, [id]);

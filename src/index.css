@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
 
 @import "tailwindcss";
 
@@ -6,20 +6,114 @@
   themes: light --default;
 };
 
-
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
-  --color-primary: #CAEB66;
-  --color-secondary: #033730;
+  --color-primary: #c8a97e;
+  --color-secondary: #4a3728;
 }
 
+* {
+  scroll-behavior: smooth;
+}
 
-
-
-.body {
-  font-family: "Urbanist", sans-serif;
+body {
+  font-family: "Jost", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
+  background-color: #faf8f5;
+  color: #3d3530;
+}
 
+h1, h2, h3, h4 {
+  font-family: "Cormorant Garamond", serif;
+}
+
+/* Smooth image hover */
+.img-hover {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.img-hover:hover {
+  transform: scale(1.04);
+}
+
+/* Elegant underline link */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #c8a97e;
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Petal divider */
+.petal-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.petal-divider::before,
+.petal-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #c8a97e, transparent);
+}
+
+/* Btn primary */
+.btn-elegant {
+  background: #4a3728;
+  color: #faf8f5;
+  padding: 12px 32px;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: 1px solid #4a3728;
+}
+.btn-elegant:hover {
+  background: transparent;
+  color: #4a3728;
+}
+
+.btn-outline-elegant {
+  background: transparent;
+  color: #4a3728;
+  padding: 12px 32px;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: 1px solid #4a3728;
+}
+.btn-outline-elegant:hover {
+  background: #4a3728;
+  color: #faf8f5;
+}
+
+/* Section label */
+.section-label {
+  font-family: "Jost", sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #c8a97e;
+}
+
+/* Card hover shadow */
+.card-hover {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 20px 60px rgba(74, 55, 40, 0.12);
+  transform: translateY(-4px);
 }

@@ -11,7 +11,7 @@ export default function AllOrders() {
   // fetch all orders
   const fetchOrders = async () => {
     try {
-      const res = await fetch("http://localhost:5000/orders");
+      const res = await fetch("https://flower-shop-server-nu.vercel.app/orders");
       const data = await res.json();
       setOrders(data);
     } catch (err) {
@@ -29,7 +29,7 @@ export default function AllOrders() {
   // update order status
   const handleStatusUpdate = async (id, status) => {
     try {
-      const res = await fetch(`http://localhost:5000/orders/${id}/status`, {
+      const res = await fetch(`https://flower-shop-server-nu.vercel.app/orders/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderStatus: status }),
@@ -65,7 +65,7 @@ export default function AllOrders() {
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/orders/${id}`, {
+      const res = await fetch(`https://flower-shop-server-nu.vercel.app/orders/${id}`, {
         method: "DELETE",
       });
 
