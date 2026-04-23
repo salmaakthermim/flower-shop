@@ -1,115 +1,71 @@
+import { motion } from "framer-motion";
+
+const galleryImages = [
+  { src: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=800", tall: true },
+  { src: "https://images.pexels.com/photos/56866/garden-rose-red-pink-56866.jpeg?auto=compress&cs=tinysrgb&w=600", tall: false },
+  { src: "https://images.pexels.com/photos/1407305/pexels-photo-1407305.jpeg?auto=compress&cs=tinysrgb&w=600", tall: false },
+  { src: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop&crop=bottom", tall: false },
+  { src: "https://images.pexels.com/photos/56866/garden-rose-red-pink-56866.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop&crop=top", tall: false },
+  { src: "https://images.pexels.com/photos/1407305/pexels-photo-1407305.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop&crop=right", tall: true },
+];
+
 const FlowerGallery = () => {
-    return (
-      <section className="bg-[#f6f1eb] py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Image Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            
-            {/* Left big image */}
-            <div className="md:row-span-2">
-              <img
-                src="https://i.ibb.co.com/JjNx8nFm/Capture-PNG1.png"
-                alt="Flowers"
-                className="w-130 h-120 object-cover rounded-md"
-              />
-            </div>
-  
-            {/* Middle small images */}
-            <div className="grid grid-rows-2 gap-4">
-              <img
-                src="https://i.ibb.co.com/sJz3xQzt/Capture.png"
-                alt=""
-                className="w-60 h-60 object-cover rounded-md"
-              />
-              <img
-                src="https://i.ibb.co.com/tTcdbRrY/Capture-PNG2.png"
-                alt=""
-                className="w-60 h-60  object-cover rounded-md"
-              />
-            </div>
-  
-           {/* Middle small images */}
-           <div className="grid grid-rows-2 gap-4">
-              <img
-                src="https://i.ibb.co.com/4wSMnj8M/Capture-PNG6.png"
-                alt=""
-                className="w-150 h-60 object-cover rounded-md"
-              />
-              <img
-                src="https://i.ibb.co.com/HLNqCmGD/Capture-PNG8.png"
-                alt=""
-                className="w-150 h-60  object-cover rounded-md"
-              />
-            </div>
-  
-            {/* Right big image */}
-            <div className="md:row-span-2">
-              <img
-                src="https://i.ibb.co.com/XkbbfdBz/Capture-PNG3.png"
-                alt=""
-                className="w-full h-full object-cover rounded-md"
-              />
-            </div>
+  return (
+    <section className="bg-[#fffdf9] py-24 px-4">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="section-label">Our Work</span>
+          <h2 className="mt-3 text-4xl md:text-5xl font-serif font-medium text-[#1a2e1a]">
+            Flower Gallery
+          </h2>
+          <div className="petal-divider max-w-xs mx-auto my-5">
+            <span className="text-[#e8a0b4] text-xl">✿</span>
           </div>
-  
-          {/* Bottom Content */}
-          <div className="mt-10 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-gray-600 max-w-2xl text-sm leading-relaxed">
-              Buying flowers for your loved ones is an important way to show them
-              that you care. Flowers have a powerful emotional impact, conveying
-              love, sympathy, and other heartfelt sentiments.
-            </p>
-  
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-[#6b6a4d] flex items-center justify-center text-white text-xl">
-                ☎
-              </div>
-              <div>
-                <h4 className="text-lg font-semibold text-gray-800">
-                  Order Flowers Now
-                </h4>
-                <p className="text-gray-500 text-sm">
-                  Call us: <span className="font-medium">+1 (234) 567 89 00</span>
-                </p>
-              </div>
-            </div>
-          </div>
-  
+        </motion.div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-2 gap-3 h-[520px]">
+          {galleryImages.map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.96 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.6 }}
+              className={`img-zoom rounded-xl overflow-hidden ${item.tall ? "row-span-2" : ""}`}
+            >
+              <img src={item.src} alt="gallery" className="w-full h-full object-cover" />
+            </motion.div>
+          ))}
         </div>
-      </section>
-    );
-  };
-  
-  export default FlowerGallery;
 
-// const images = [
-//   "https://i.ibb.co.com/JjNx8nFm/Capture-PNG1.png",
-//   "https://i.ibb.co.com/sJz3xQzt/Capture.png",
-//   "https://i.ibb.co.com/tTcdbRrY/Capture-PNG2.png",
-//   "https://i.ibb.co.com/4wSMnj8M/Capture-PNG6.png",
-//   "https://i.ibb.co.com/HLNqCmGD/Capture-PNG8.png",
-//   "https://i.ibb.co.com/XkbbfdBz/Capture-PNG3.png",
-// ];
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-10 flex flex-col md:flex-row justify-between items-center gap-8 bg-[#f0f7f2] border border-[#c8e0d0] p-8 rounded-2xl"
+        >
+          <p className="text-[#4a6a4a] max-w-xl text-sm leading-relaxed">
+            Buying flowers for your loved ones is an important way to show them that you care.
+            Flowers have a powerful emotional impact, conveying love, sympathy, and heartfelt sentiments.
+          </p>
+          <div className="flex items-center gap-5 flex-shrink-0">
+            <div className="w-14 h-14 rounded-full bg-[#2d5a3d] flex items-center justify-center text-[#e8a0b4] text-xl shadow-md">☎</div>
+            <div>
+              <h4 className="font-serif text-lg text-[#1a2e1a]">Order Flowers Now</h4>
+              <p className="text-[#4a6a4a] text-sm mt-0.5">
+                Call us: <span className="text-[#2d5a3d] font-semibold">+1 (234) 567 89 00</span>
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
 
-// export default function FlowerGallery() {
-//   return (
-//     <section className="bg-[#f7f3ef] py-16 px-4">
-//       <div className="max-w-7xl mx-auto columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
-//         {images.map((img, index) => (
-//           <div
-//             key={index}
-//             className="mb-6 overflow-hidden rounded-xl shadow-md group"
-//           >
-//             <img
-//               src={img}
-//               alt="Flower Gallery"
-//               className="w-full h-full object-cover   "
-//             />
-//           </div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// }
-
-  
+export default FlowerGallery;

@@ -21,7 +21,7 @@ export default function NewFlowers() {
 
   // ================= FETCH FLOWERS =================
   useEffect(() => {
-    fetch("https://flower-shop-server-nu.vercel.app/flowers")
+    fetch("http://localhost:5000/flowers")
       .then((res) => res.json())
       .then((data) => setFlowers(data));
   }, []);
@@ -41,7 +41,7 @@ export default function NewFlowers() {
     setLoadingCart(true);
 
     const res = await fetch(
-      `https://flower-shop-server-nu.vercel.app/cart/${user.email}`
+      `http://localhost:5000/cart/${user.email}`
     );
     const data = await res.json();
     setCart(data);
@@ -59,7 +59,7 @@ export default function NewFlowers() {
       return;
     }
 
-    await fetch("https://flower-shop-server-nu.vercel.app/cart", {
+    await fetch("http://localhost:5000/cart", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +82,7 @@ export default function NewFlowers() {
   const updateQty = async (id, qty) => {
     if (qty < 1) return;
 
-    await fetch(`https://flower-shop-server-nu.vercel.app/cart/${id}`, {
+    await fetch(`http://localhost:5000/cart/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -95,7 +95,7 @@ export default function NewFlowers() {
 
   // ================= REMOVE ITEM =================
   const removeItem = async (id) => {
-    await fetch(`https://flower-shop-server-nu.vercel.app/cart/${id}`, {
+    await fetch(`http://localhost:5000/cart/${id}`, {
       method: "DELETE",
     });
 
@@ -142,7 +142,7 @@ export default function NewFlowers() {
       total,
     };
 
-    const res = await fetch("https://flower-shop-server-nu.vercel.app/orders", {
+    const res = await fetch("http://localhost:5000/orders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -159,7 +159,7 @@ export default function NewFlowers() {
 
     // Clear cart after order
     await fetch(
-      `https://flower-shop-server-nu.vercel.app/cart/clear/${user.email}`,
+      `http://localhost:5000/cart/clear/${user.email}`,
       { method: "DELETE" }
     );
 
@@ -172,12 +172,29 @@ export default function NewFlowers() {
   };
 
   return (
-    <section className="bg-[#f7f3ee] py-16 relative">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="bg-[#fffdf9] py-24 relative">
+      <div className="max-w-7xl mx-auto px-6">
+
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-14"
+        >
+          <span className="section-label">Fresh Arrivals</span>
+          <h2 className="mt-3 text-4xl md:text-5xl font-serif font-medium text-[#1a2e1a]">
+            New Flowers
+          </h2>
+          <div className="petal-divider max-w-xs mx-auto my-5">
+            <span className="text-[#e8a0b4] text-xl">✿</span>
+          </div>
+        </motion.div>
+
         <Swiper
           modules={[Navigation]}
           navigation
-          spaceBetween={30}
+          spaceBetween={24}
           breakpoints={{
             640: { slidesPerView: 2 },
             1024: { slidesPerView: 4 },
@@ -186,28 +203,28 @@ export default function NewFlowers() {
           {flowers.map((flower) => (
             <SwiperSlide key={flower._id}>
               <motion.div
-                whileHover={{ y: -8 }}
-                className="text-center cursor-pointer"
+                whileHover={{ y: -6 }}
+                className="group bg-white border border-[#e8f0ea] overflow-hidden cursor-pointer card-lift rounded-2xl"
                 onClick={() => navigate(`/flower/${flower._id}`)}
               >
-                <img
-                  src={flower.image}
-                  alt={flower.name}
-                  className="mx-auto h-64 object-contain"
-                />
-                <h3 className="mt-4 font-semibold">{flower.name}</h3>
-                <p>${flower.price}</p>
+                <div className="overflow-hidden h-64 bg-[#f0f7f2] rounded-t-2xl">
+                  <img
+                    src={flower.image}
+                    alt={flower.name}
+                    className="w-full h-full object-contain p-4 group-hover:scale-105 transition duration-500"
+                  />
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="font-serif text-lg font-medium text-[#1a2e1a]">{flower.name}</h3>
+                  <p className="text-[#2d5a3d] font-semibold mt-1">${flower.price}</p>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); addToCart(flower); }}
+                    className="mt-4 w-full btn-primary text-[10px] py-2.5"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
               </motion.div>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // 🔥 Important (details page না যেতে)
-                  addToCart(flower);
-                }}
-                className="mt-4 ml-20 px-6 py-2 border hover:bg-gray-800 hover:text-white"
-              >
-                ADD TO CART
-              </button>
             </SwiperSlide>
           ))}
         </Swiper>
@@ -220,115 +237,100 @@ export default function NewFlowers() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 z-50 flex justify-end"
+            className="fixed inset-0 bg-black/50 z-50 flex justify-end"
+            onClick={(e) => e.target === e.currentTarget && setOpen(false)}
           >
             <motion.div
-              initial={{ x: 400 }}
+              initial={{ x: 420 }}
               animate={{ x: 0 }}
-              exit={{ x: 400 }}
-              className="w-full max-w-md bg-white h-full p-6 overflow-y-auto"
+              exit={{ x: 420 }}
+              transition={{ type: "spring", damping: 25 }}
+              className="w-full max-w-md bg-white h-full flex flex-col shadow-2xl"
             >
-              <div className="flex justify-between mb-4">
-                <h2 className="text-xl font-semibold">
-                  Shopping Cart
-                </h2>
-                <button onClick={() => setOpen(false)}>
-                  ✕
-                </button>
+              {/* Cart Header */}
+              <div className="flex justify-between items-center px-7 py-6 border-b border-[#e8f0ea] bg-[#f0f7f2]">
+                <div>
+                  <h2 className="text-2xl font-serif text-[#1a2e1a]">Shopping Cart</h2>
+                  <p className="text-[11px] tracking-widest text-[#2d5a3d] uppercase mt-0.5">{cart.length} items</p>
+                </div>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="w-9 h-9 border border-[#c8e0d0] rounded-full flex items-center justify-center hover:bg-[#2d5a3d] hover:text-white hover:border-[#2d5a3d] transition text-[#1a2e1a]"
+                >✕</button>
               </div>
 
-              {loadingCart ? (
-                <p>Loading...</p>
-              ) : cart.length === 0 ? (
-                <p>Your cart is empty 😔</p>
-              ) : (
-                cart.map((item) => (
-                  <div
-                    key={item._id}
-                    className="flex items-center gap-3 mb-4"
-                  >
-                    <img
-                      src={item.image}
-                      className="w-14 h-14 object-cover"
-                    />
-                    <div className="flex-1">
-                      <p>{item.name}</p>
-                      <div className="flex gap-2 mt-1">
-                        <button
-                          onClick={() =>
-                            updateQty(
-                              item._id,
-                              item.quantity - 1
-                            )
-                          }
-                        >
-                          -
-                        </button>
-                        <span>{item.quantity}</span>
-                        <button
-                          onClick={() =>
-                            updateQty(
-                              item._id,
-                              item.quantity + 1
-                            )
-                          }
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() =>
-                        removeItem(item._id)
-                      }
-                    >
-                      🗑
-                    </button>
+              {/* Cart Items */}
+              <div className="flex-1 overflow-y-auto px-7 py-5">
+                {loadingCart ? (
+                  <div className="flex items-center justify-center h-32">
+                    <div className="w-8 h-8 border-2 border-[#2d5a3d] border-t-transparent rounded-full animate-spin" />
                   </div>
-                ))
-              )}
+                ) : cart.length === 0 ? (
+                  <div className="text-center py-16">
+                    <p className="text-4xl mb-4">🌸</p>
+                    <p className="font-serif text-lg text-[#1a2e1a]">Your cart is empty</p>
+                    <p className="text-sm mt-2 text-[#4a6a4a]">Add some beautiful flowers!</p>
+                  </div>
+                ) : (
+                  cart.map((item) => (
+                    <div key={item._id} className="flex items-center gap-4 py-4 border-b border-[#e8f0ea]">
+                      <img src={item.image} className="w-16 h-16 object-cover bg-[#f0f7f2] rounded-lg" alt={item.name} />
+                      <div className="flex-1">
+                        <p className="font-medium text-[#1a2e1a] text-sm">{item.name}</p>
+                        <p className="text-[#2d5a3d] font-semibold text-sm mt-0.5">${item.price}</p>
+                        <div className="flex items-center gap-3 mt-2">
+                          <button onClick={() => updateQty(item._id, item.quantity - 1)}
+                            className="w-7 h-7 border border-[#c8e0d0] rounded-full flex items-center justify-center text-[#1a2e1a] hover:bg-[#2d5a3d] hover:text-white hover:border-[#2d5a3d] transition text-sm">−</button>
+                          <span className="text-sm font-medium text-[#1a2e1a] w-4 text-center">{item.quantity}</span>
+                          <button onClick={() => updateQty(item._id, item.quantity + 1)}
+                            className="w-7 h-7 border border-[#c8e0d0] rounded-full flex items-center justify-center text-[#1a2e1a] hover:bg-[#2d5a3d] hover:text-white hover:border-[#2d5a3d] transition text-sm">+</button>
+                        </div>
+                      </div>
+                      <button onClick={() => removeItem(item._id)} className="text-[#e8a0b4] hover:text-red-400 transition text-lg">🗑</button>
+                    </div>
+                  ))
+                )}
+              </div>
 
-              <p className="font-semibold border-t pt-3">
-                Total: ${total}
-              </p>
+              {/* Order Form + Total */}
+              <div className="px-7 py-6 border-t border-[#e8f0ea] bg-[#f0f7f2]">
+                <div className="flex justify-between items-center mb-5">
+                  <span className="text-sm text-[#4a6a4a] tracking-wide">Total</span>
+                  <span className="text-2xl font-serif text-[#1a2e1a]">${total}</span>
+                </div>
 
-              <div className="mt-6 space-y-3">
-                <input
-                  value={name}
-                  onChange={(e) =>
-                    setName(e.target.value)
-                  }
-                  placeholder="Name *"
-                  className="w-full bg-gray-100 p-2"
-                />
-                <input
-                  value={email}
-                  readOnly
-                  className="w-full bg-gray-200 p-2"
-                />
-                <input
-                  value={phone}
-                  onChange={(e) =>
-                    setPhone(e.target.value)
-                  }
-                  placeholder="Phone *"
-                  className="w-full bg-gray-100 p-2"
-                />
-                <textarea
-                  value={comment}
-                  onChange={(e) =>
-                    setComment(e.target.value)
-                  }
-                  placeholder="Comment"
-                  className="w-full bg-gray-100 p-2"
-                />
-
-                <button
-                  onClick={handleOrder}
-                  className="w-full bg-[#7a745e] text-white py-3"
-                >
-                  ORDER
-                </button>
+                <div className="space-y-3">
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Full Name *"
+                    className="w-full bg-white border border-[#c8e0d0] px-4 py-3 text-sm text-[#1a2e1a] placeholder-[#8aaa8a] focus:outline-none focus:border-[#2d5a3d] transition rounded-lg"
+                  />
+                  <input
+                    value={email}
+                    readOnly
+                    className="w-full bg-[#e8f0ea] border border-[#c8e0d0] px-4 py-3 text-sm text-[#4a6a4a] rounded-lg"
+                  />
+                  <input
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Phone Number *"
+                    className="w-full bg-white border border-[#c8e0d0] px-4 py-3 text-sm text-[#1a2e1a] placeholder-[#8aaa8a] focus:outline-none focus:border-[#2d5a3d] transition rounded-lg"
+                  />
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Special instructions..."
+                    rows={2}
+                    className="w-full bg-white border border-[#c8e0d0] px-4 py-3 text-sm text-[#1a2e1a] placeholder-[#8aaa8a] focus:outline-none focus:border-[#2d5a3d] transition resize-none rounded-lg"
+                  />
+                  <button
+                    onClick={handleOrder}
+                    className="w-full btn-primary py-4 text-[11px] tracking-[0.2em]"
+                  >
+                    Place Order
+                  </button>
+                </div>
               </div>
             </motion.div>
           </motion.div>

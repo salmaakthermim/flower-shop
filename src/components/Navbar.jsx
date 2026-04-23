@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
+import { FaUserCircle, FaBars, FaTimes, FaShoppingBag } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
@@ -11,7 +11,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -27,27 +27,36 @@ const Navbar = () => {
     <header
       className={`sticky top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-[#e8e0d8]"
-          : "bg-[#faf8f5] border-b border-[#e8e0d8]"
+          ? "bg-white/96 backdrop-blur-lg shadow-md"
+          : "bg-white border-b border-[#e8f0ea]"
       }`}
     >
+      {/* Top announcement bar */}
+      <div className="bg-[#2d5a3d] text-white text-center py-2 text-[10px] tracking-[0.25em] uppercase">
+        Free delivery on orders over $80 &nbsp;·&nbsp; Fresh flowers daily
+      </div>
+
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex flex-col items-start leading-none">
-          <span className="text-2xl font-serif tracking-[0.2em] text-[#4a3728]">
+        <Link to="/" className="flex flex-col items-start leading-none group">
+          <span className="text-[26px] font-serif tracking-[0.18em] text-[#2d5a3d] group-hover:text-[#e8a0b4] transition-colors duration-300">
             FIORELLO
           </span>
-          <span className="text-[9px] tracking-[0.35em] text-[#c8a97e] uppercase">
+          <span className="text-[8px] tracking-[0.4em] text-[#e8a0b4] uppercase font-medium">
             Flower Studio
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-10 text-[11px] tracking-[0.2em] font-medium text-[#4a3728]">
+        <nav className="hidden md:flex items-center gap-10 text-[11px] tracking-[0.18em] font-medium text-[#1a2e1a]">
           <NavItem to="/" text="HOME" />
           <NavItem to="/shop" text="SHOP" />
           <NavItem to="/contacts" text="CONTACTS" />
           <NavItem to="/about" text="ABOUT US" />
+        </nav>
+
+        {/* Right actions */}
+        <div className="hidden md:flex items-center gap-5">
           {user ? (
             <UserDropdown
               user={user}
@@ -56,18 +65,15 @@ const Navbar = () => {
               handleLogout={handleLogout}
             />
           ) : (
-            <Link
-              to="/login"
-              className="btn-elegant text-[10px] tracking-[0.2em]"
-            >
-              LOGIN
+            <Link to="/login" className="btn-primary text-[10px] py-2.5 px-6">
+              Login
             </Link>
           )}
-        </nav>
+        </div>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile hamburger */}
         <button
-          className="md:hidden text-xl text-[#4a3728]"
+          className="md:hidden text-xl text-[#2d5a3d]"
           onClick={() => setMobileMenu(!mobileMenu)}
         >
           {mobileMenu ? <FaTimes /> : <FaBars />}
@@ -76,22 +82,18 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileMenu && (
-        <div className="md:hidden bg-white border-t border-[#e8e0d8] px-6 pb-6 pt-4 space-y-4 text-[11px] tracking-[0.2em] font-medium text-[#4a3728]">
+        <div className="md:hidden bg-white border-t border-[#e8f0ea] px-6 pb-6 pt-4 space-y-4 text-[11px] tracking-[0.2em] font-medium text-[#1a2e1a]">
           <NavItem to="/" text="HOME" />
           <NavItem to="/shop" text="SHOP" />
           <NavItem to="/contacts" text="CONTACTS" />
           <NavItem to="/about" text="ABOUT US" />
           {user ? (
             <>
-              <Link to="/dashboard" className="block py-2" onClick={() => setMobileMenu(false)}>
-                DASHBOARD
-              </Link>
-              <button onClick={handleLogout} className="block py-2 text-left w-full">
-                LOGOUT
-              </button>
+              <Link to="/dashboard" className="block py-2" onClick={() => setMobileMenu(false)}>DASHBOARD</Link>
+              <button onClick={handleLogout} className="block py-2 text-left w-full">LOGOUT</button>
             </>
           ) : (
-            <NavItem to="/login" text="LOGIN" />
+            <Link to="/login" className="block py-2">LOGIN</Link>
           )}
         </div>
       )}
@@ -100,7 +102,7 @@ const Navbar = () => {
 };
 
 const NavItem = ({ to, text }) => (
-  <Link to={to} className="nav-link block py-1">
+  <Link to={to} className="nav-link block py-1 hover:text-[#2d5a3d] transition-colors">
     {text}
   </Link>
 );
@@ -111,22 +113,22 @@ const UserDropdown = ({ user, dropdown, setDropdown, handleLogout }) => (
       <img
         src={user.avatar}
         alt="avatar"
-        className="w-9 h-9 rounded-full cursor-pointer ring-2 ring-[#c8a97e] ring-offset-1"
+        className="w-9 h-9 rounded-full cursor-pointer ring-2 ring-[#e8a0b4] ring-offset-1"
         onClick={() => setDropdown(!dropdown)}
       />
     ) : (
       <FaUserCircle
         size={28}
-        className="cursor-pointer text-[#4a3728]"
+        className="cursor-pointer text-[#2d5a3d]"
         onClick={() => setDropdown(!dropdown)}
       />
     )}
     {dropdown && (
-      <div className="absolute right-0 mt-3 w-44 bg-white shadow-xl border border-[#e8e0d8] py-2 z-50">
-        <Link to="/dashboard" className="block px-5 py-2.5 text-[11px] tracking-widest hover:bg-[#faf8f5] hover:text-[#c8a97e] transition">
+      <div className="absolute right-0 mt-3 w-44 bg-white shadow-xl border border-[#e8f0ea] py-2 z-50 rounded-sm">
+        <Link to="/dashboard" className="block px-5 py-2.5 text-[11px] tracking-widest hover:bg-[#f0f7f2] hover:text-[#2d5a3d] transition">
           DASHBOARD
         </Link>
-        <button onClick={handleLogout} className="block w-full text-left px-5 py-2.5 text-[11px] tracking-widest hover:bg-[#faf8f5] hover:text-[#c8a97e] transition">
+        <button onClick={handleLogout} className="block w-full text-left px-5 py-2.5 text-[11px] tracking-widest hover:bg-[#f0f7f2] hover:text-[#2d5a3d] transition">
           LOGOUT
         </button>
       </div>

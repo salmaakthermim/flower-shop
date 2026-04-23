@@ -11,7 +11,7 @@ export default function AllFlowers() {
 
     // ================= LOAD FLOWERS =================
     useEffect(() => {
-        fetch("https://flower-shop-server-nu.vercel.app/flowers")
+        fetch("http://localhost:5000/flowers")
             .then(res => res.json())
             .then(data => {
                 setFlowers(data);

@@ -25,7 +25,7 @@ export default function FlowerDetails() {
 
   // ================= LOAD FLOWER =================
   useEffect(() => {
-    fetch(`https://flower-shop-server-nu.vercel.app/flowers/${id}`)
+    fetch(`http://localhost:5000/flowers/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setFlower(data);
@@ -48,7 +48,7 @@ export default function FlowerDetails() {
 
     setLoadingCart(true);
     const res = await fetch(
-      `https://flower-shop-server-nu.vercel.app/cart/${user.email}`
+      `http://localhost:5000/cart/${user.email}`
     );
     const data = await res.json();
     setCart(data);
@@ -63,7 +63,7 @@ export default function FlowerDetails() {
       return;
     }
 
-    await fetch("https://flower-shop-server-nu.vercel.app/cart", {
+    await fetch("http://localhost:5000/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -84,7 +84,7 @@ export default function FlowerDetails() {
   const updateQty = async (id, quantity) => {
     if (quantity < 1) return;
 
-    await fetch(`https://flower-shop-server-nu.vercel.app/cart/${id}`, {
+    await fetch(`http://localhost:5000/cart/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity }),
@@ -95,7 +95,7 @@ export default function FlowerDetails() {
 
   // ================= REMOVE ITEM =================
   const removeItem = async (id) => {
-    await fetch(`https://flower-shop-server-nu.vercel.app/cart/${id}`, {
+    await fetch(`http://localhost:5000/cart/${id}`, {
       method: "DELETE",
     });
     loadCart();
@@ -135,7 +135,7 @@ export default function FlowerDetails() {
       total,
     };
 
-    const res = await fetch("https://flower-shop-server-nu.vercel.app/orders", {
+    const res = await fetch("http://localhost:5000/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
@@ -144,7 +144,7 @@ export default function FlowerDetails() {
     const data = await res.json();
 
     await fetch(
-      `https://flower-shop-server-nu.vercel.app/cart/clear/${user.email}`,
+      `http://localhost:5000/cart/clear/${user.email}`,
       { method: "DELETE" }
     );
 

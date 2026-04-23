@@ -5,204 +5,133 @@ import Swal from "sweetalert2";
 export default function ManageFlowers() {
   const [flowers, setFlowers] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // edit modal states
   const [isOpen, setIsOpen] = useState(false);
   const [editId, setEditId] = useState(null);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
-  const [description, setDescription] = useState("");
+  const [form, setForm] = useState({ name: "", price: "", image: "", description: "" });
   const [updating, setUpdating] = useState(false);
 
-  // fetch flowers
   const fetchFlowers = async () => {
     try {
-      const res = await fetch("https://flower-shop-server-nu.vercel.app/flowers");
-      const data = await res.json();
-      setFlowers(data);
-    } catch (err) {
-      toast.error("Failed to load flowers ❌");
-    } finally {
-      setLoading(false);
-    }
+      const res = await fetch("http://localhost:5000/flowers");
+      setFlowers(await res.json());
+    } catch { toast.error("Failed to load flowers"); }
+    finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    fetchFlowers();
-  }, []);
+  useEffect(() => { fetchFlowers(); }, []);
 
-// delete flower with SweetAlert
-const handleDelete = async (id) => {
+  const handleDelete = async (id) => {
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "This flower will be permanently deleted!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#ec4899", // pink
-      cancelButtonColor: "#6b7280",  // gray
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      title: "Delete this flower?", icon: "warning",
+      showCancelButton: true, confirmButtonColor: "#e8a0b4",
+      cancelButtonColor: "#6b7280", confirmButtonText: "Delete",
     });
-  
     if (!result.isConfirmed) return;
-  
-    try {
-      const res = await fetch(`https://flower-shop-server-nu.vercel.app/flowers/${id}`, {
-        method: "DELETE",
-      });
-  
-      if (res.ok) {
-        toast.success("Flower deleted 🌸");
-        setFlowers(flowers.filter((f) => f._id !== id));
-      } else {
-        toast.error("Delete failed ❌");
-      }
-    } catch (error) {
-      toast.error("Server error ❌");
-    }
+    const res = await fetch(`http://localhost:5000/flowers/${id}`, { method: "DELETE" });
+    if (res.ok) { toast.success("Flower deleted"); setFlowers(f => f.filter(x => x._id !== id)); }
   };
-  
 
-  // open edit modal
   const openEdit = (flower) => {
     setEditId(flower._id);
-    setName(flower.name);
-    setPrice(flower.price);
-    setImage(flower.image);
-    setDescription(flower.description || "");
+    setForm({ name: flower.name, price: flower.price, image: flower.image, description: flower.description || "" });
     setIsOpen(true);
   };
 
-  // update flower
   const handleUpdate = async (e) => {
     e.preventDefault();
     setUpdating(true);
-
     try {
-      const res = await fetch(`https://flower-shop-server-nu.vercel.app/flowers/${editId}`, {
+      const res = await fetch(`http://localhost:5000/flowers/${editId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, price, image, description }),
+        body: JSON.stringify(form),
       });
-
-      if (res.ok) {
-        toast.success("Flower updated 🌼");
-        setIsOpen(false);
-        fetchFlowers();
-      } else {
-        toast.error("Update failed ❌");
-      }
-    } catch {
-      toast.error("Server error ❌");
-    } finally {
-      setUpdating(false);
-    }
+      if (res.ok) { toast.success("Flower updated"); setIsOpen(false); fetchFlowers(); }
+      else toast.error("Update failed");
+    } catch { toast.error("Server error"); }
+    finally { setUpdating(false); }
   };
 
-  if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
-  }
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <div className="w-8 h-8 border-2 border-[#2d5a3d] border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold text-pink-600 mb-6 text-center">
-        🌼 Manage Flowers
-      </h2>
-
-      <div className="overflow-x-auto  shadow-xl rounded-xl">
-        <table className="min-w-full text-sm text-left">
-          <thead className="bg-pink-100 text-pink-700">
-            <tr>
-              <th className="px-4 py-3">Image</th>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Price</th>
-              <th className="px-4 py-3 text-center">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {flowers.map((flower) => (
-              <tr key={flower._id} className="border-t">
-                <td className="px-4 py-3">
-                  <img
-                    src={flower.image}
-                    alt={flower.name}
-                    className="w-14 h-14 rounded object-cover"
-                  />
-                </td>
-                <td className="px-4 py-3">{flower.name}</td>
-                <td className="px-4 py-3">৳ {flower.price}</td>
-                <td className="px-4 py-3 text-center space-x-2">
-                  <button
-                    onClick={() => openEdit(flower)}
-                    className="px-3 py-1 bg-blue-500 text-white rounded"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(flower._id)}
-                    className="px-3 py-1 bg-red-500 text-white rounded"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="p-6 md:p-8">
+      <div className="mb-7">
+        <p className="section-label">Admin</p>
+        <h1 className="text-3xl font-serif font-medium text-[#1a2e1a] mt-1">Manage Flowers</h1>
       </div>
 
-      {/* EDIT MODAL */}
+      <div className="bg-white rounded-2xl shadow-sm border border-[#e8f0ea] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="bg-[#f0f7f2] border-b border-[#e8f0ea]">
+                {["Image", "Name", "Price", "Actions"].map(h => (
+                  <th key={h} className="px-5 py-3.5 text-left text-[10px] tracking-widest uppercase text-[#4a6a4a] font-medium">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {flowers.map((flower) => (
+                <tr key={flower._id} className="border-b border-[#f0f7f2] hover:bg-[#fafffe] transition">
+                  <td className="px-5 py-3">
+                    <img src={flower.image} alt={flower.name} className="w-12 h-12 rounded-xl object-cover bg-[#f0f7f2]" />
+                  </td>
+                  <td className="px-5 py-3 font-medium text-[#1a2e1a]">{flower.name}</td>
+                  <td className="px-5 py-3 font-semibold text-[#2d5a3d]">${flower.price}</td>
+                  <td className="px-5 py-3">
+                    <div className="flex gap-2">
+                      <button onClick={() => openEdit(flower)}
+                        className="px-3 py-1.5 bg-[#f0f7f2] text-[#2d5a3d] text-[10px] tracking-widest uppercase rounded-lg hover:bg-[#2d5a3d] hover:text-white transition font-medium">
+                        Edit
+                      </button>
+                      <button onClick={() => handleDelete(flower._id)}
+                        className="px-3 py-1.5 bg-[#fce8ef] text-[#c0506a] text-[10px] tracking-widest uppercase rounded-lg hover:bg-[#c0506a] hover:text-white transition font-medium">
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Edit Modal */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white w-full max-w-md p-6 rounded-xl">
-            <h3 className="text-xl font-bold mb-4 text-pink-600">
-              ✏️ Edit Flower
-            </h3>
-
-            <form onSubmit={handleUpdate} className="space-y-3">
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full border p-2 rounded"
-                placeholder="Name"
-                required
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-7 shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-serif text-xl text-[#1a2e1a]">Edit Flower</h3>
+              <button onClick={() => setIsOpen(false)} className="text-[#4a6a4a] hover:text-[#1a2e1a] text-xl">✕</button>
+            </div>
+            <form onSubmit={handleUpdate} className="space-y-4">
+              {[
+                { key: "name", placeholder: "Flower Name", type: "text" },
+                { key: "price", placeholder: "Price", type: "number" },
+                { key: "image", placeholder: "Image URL", type: "text" },
+              ].map(({ key, placeholder, type }) => (
+                <input key={key} type={type} placeholder={placeholder} value={form[key]}
+                  onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                  className="w-full border border-[#c8e0d0] px-4 py-3 rounded-xl text-sm text-[#1a2e1a] focus:outline-none focus:border-[#2d5a3d] transition"
+                  required
+                />
+              ))}
+              <textarea placeholder="Description" value={form.description}
+                onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                className="w-full border border-[#c8e0d0] px-4 py-3 rounded-xl text-sm text-[#1a2e1a] focus:outline-none focus:border-[#2d5a3d] transition resize-none"
+                rows={3}
               />
-              <input
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                type="number"
-                className="w-full border p-2 rounded"
-                placeholder="Price"
-                required
-              />
-              <input
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-                className="w-full border p-2 rounded"
-                placeholder="Image URL"
-                required
-              />
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full border p-2 rounded"
-                placeholder="Description"
-              />
-
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 border rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  disabled={updating}
-                  className="px-4 py-2 bg-pink-500 text-white rounded"
-                >
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setIsOpen(false)}
+                  className="flex-1 btn-outline py-3 text-[11px]">Cancel</button>
+                <button type="submit" disabled={updating}
+                  className="flex-1 btn-primary py-3 text-[11px]">
                   {updating ? "Updating..." : "Update"}
                 </button>
               </div>

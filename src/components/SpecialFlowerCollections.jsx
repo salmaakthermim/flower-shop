@@ -1,57 +1,78 @@
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+
 const collections = [
-    {
-      title: "Mother's Day Collection",
-      desc: "One of the best and the most elegant ways to show your mother how much you love her is to present her a beautiful flower composition.",
-      img: "https://i.ibb.co.com/rfmvNywR/Capture-PNG234.png",
-    },
-    {
-      title: "Valentine's Day Collection",
-      desc: "If you're looking for a unique gift to your loved one, check out this fantastic collection. It'll help you make Valentine's Day really special!",
-      img: "https://i.ibb.co.com/4gS63YLg/Capture-PNG1.png",
-    },
-    {
-      title: "Autumn Collection",
-      desc: "Order bouquets from this beautiful special collection and focus on picking the presents to match them, while we'll arrange the flowers.",
-      img: "https://i.ibb.co.com/qLDfj7mK/Capture-PNG55555.png",
-    },
-  ];
-  
-  export default function SpecialFlowerCollections() {
-    return (
-      <section className="bg-[#f7f3ef] py-20 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          {/* Heading */}
-          <p className="italic text-gray-400 mb-2">Special</p>
-          <h2 className="text-4xl md:text-5xl font-serif text-gray-700">
+  {
+    title: "Mother's Day Collection",
+    desc: "One of the best ways to show your mother how much you love her is a beautiful flower composition.",
+    img: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=700&h=300&fit=crop&crop=top",
+    tag: "Popular",
+    tagColor: "bg-[#e8a0b4] text-white",
+  },
+  {
+    title: "Valentine's Day Collection",
+    desc: "Looking for a unique gift? Check out this fantastic collection to make Valentine's Day truly special.",
+    img: "https://images.pexels.com/photos/56866/garden-rose-red-pink-56866.jpeg?auto=compress&cs=tinysrgb&w=700&h=300&fit=crop",
+    tag: "Bestseller",
+    tagColor: "bg-[#2d5a3d] text-white",
+  },
+  {
+    title: "Autumn Collection",
+    desc: "Order bouquets from this beautiful seasonal collection while we arrange the flowers with care.",
+    img: "https://images.pexels.com/photos/1407305/pexels-photo-1407305.jpeg?auto=compress&cs=tinysrgb&w=700&h=300&fit=crop",
+    tag: "Seasonal",
+    tagColor: "bg-[#1a2e1a] text-white",
+  },
+];
+
+export default function SpecialFlowerCollections() {
+  return (
+    <section className="bg-[#fffdf9] py-24 px-4">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="section-label">Special</span>
+          <h2 className="mt-3 text-4xl md:text-5xl font-serif font-medium text-[#1a2e1a]">
             Special Flower Collections
           </h2>
-          <div className="w-16 h-[2px] bg-gray-400 mx-auto my-6"></div>
-          <p className="max-w-2xl mx-auto text-gray-500 mb-14">
-            Need to pick a gift for a specific event? We can help you even if you
-            are short of time.
-          </p>
-  
-          {/* Cards */}
-          <div className="grid md:grid-cols-3 gap-10">
-            {collections.map((item, index) => (
-              <div key={index} className="text-left">
-                <img
-                  src={item.img}
-                  alt={item.title}
-                  className="w-full h-[260px] object-cover"
-                />
-                <h3 className="text-2xl font-serif text-gray-700 mt-6">
-                  {item.title}
-                </h3>
-                <p className="text-gray-500 mt-4">{item.desc}</p>
-                <button className="mt-6 bg-[#6b6b4d] text-white px-6 py-3 text-sm tracking-wider hover:bg-[#5a5a3f] transition">
-                  ORDER NOW
-                </button>
-              </div>
-            ))}
+          <div className="petal-divider max-w-xs mx-auto my-6">
+            <span className="text-[#e8a0b4] text-xl">✿</span>
           </div>
+          <p className="max-w-xl mx-auto text-[#4a6a4a] text-base leading-relaxed">
+            Need to pick a gift for a specific event? We can help you even if you are short of time.
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {collections.map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.15, duration: 0.7 }}
+              className="group card-lift bg-white rounded-2xl overflow-hidden shadow-sm border border-[#e8f0ea]"
+            >
+              <div className="img-zoom relative h-[260px]">
+                <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                <span className={`absolute top-4 left-4 text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full font-medium ${item.tagColor}`}>
+                  {item.tag}
+                </span>
+              </div>
+              <div className="p-7">
+                <h3 className="text-xl font-serif font-medium text-[#1a2e1a] mb-3">{item.title}</h3>
+                <div className="w-8 h-[2px] bg-[#e8a0b4] mb-4 rounded-full" />
+                <p className="text-[#4a6a4a] text-sm leading-relaxed mb-6">{item.desc}</p>
+                <Link to="/shop" className="btn-primary text-[10px] py-2.5 px-6">Order Now</Link>
+              </div>
+            </motion.div>
+          ))}
         </div>
-      </section>
-    );
-  }
-  
+      </div>
+    </section>
+  );
+}

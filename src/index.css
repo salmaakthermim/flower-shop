@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 @import "tailwindcss";
 
@@ -9,111 +9,170 @@
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
-  --color-primary: #c8a97e;
-  --color-secondary: #4a3728;
+  --color-primary: #e8a0b4;
+  --color-secondary: #2d5a3d;
 }
 
 * {
   scroll-behavior: smooth;
+  box-sizing: border-box;
 }
 
 body {
-  font-family: "Jost", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-  background-color: #faf8f5;
-  color: #3d3530;
+  font-family: "DM Sans", sans-serif;
+  background-color: #fffdf9;
+  color: #1a2e1a;
 }
 
 h1, h2, h3, h4 {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Playfair Display", serif;
 }
 
-/* Smooth image hover */
-.img-hover {
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+/* ── Image hover zoom ── */
+.img-zoom {
+  overflow: hidden;
 }
-.img-hover:hover {
-  transform: scale(1.04);
+.img-zoom img {
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.img-zoom:hover img {
+  transform: scale(1.06);
 }
 
-/* Elegant underline link */
+/* ── Nav underline ── */
 .nav-link {
   position: relative;
+  padding-bottom: 2px;
 }
 .nav-link::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: 0;
   left: 0;
   width: 0;
-  height: 1px;
-  background: #c8a97e;
+  height: 1.5px;
+  background: #e8a0b4;
   transition: width 0.3s ease;
 }
-.nav-link:hover::after {
-  width: 100%;
-}
+.nav-link:hover::after { width: 100%; }
 
-/* Petal divider */
+/* ── Petal divider ── */
 .petal-divider {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 .petal-divider::before,
 .petal-divider::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, #c8a97e, transparent);
+  background: linear-gradient(to right, transparent, #e8a0b4, transparent);
 }
 
-/* Btn primary */
-.btn-elegant {
-  background: #4a3728;
-  color: #faf8f5;
-  padding: 12px 32px;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  border: 1px solid #4a3728;
-}
-.btn-elegant:hover {
-  background: transparent;
-  color: #4a3728;
-}
-
-.btn-outline-elegant {
-  background: transparent;
-  color: #4a3728;
-  padding: 12px 32px;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  border: 1px solid #4a3728;
-}
-.btn-outline-elegant:hover {
-  background: #4a3728;
-  color: #faf8f5;
-}
-
-/* Section label */
+/* ── Section label ── */
 .section-label {
-  font-family: "Jost", sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.25em;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #c8a97e;
+  color: #2d5a3d;
+  font-weight: 500;
 }
 
-/* Card hover shadow */
-.card-hover {
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+/* ── Buttons ── */
+.btn-primary {
+  display: inline-block;
+  background: #2d5a3d;
+  color: #fff;
+  padding: 13px 36px;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: 1.5px solid #2d5a3d;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
-.card-hover:hover {
-  box-shadow: 0 20px 60px rgba(74, 55, 40, 0.12);
-  transform: translateY(-4px);
+.btn-primary:hover {
+  background: transparent;
+  color: #2d5a3d;
+}
+
+.btn-secondary {
+  display: inline-block;
+  background: transparent;
+  color: #fff;
+  padding: 13px 36px;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: 1.5px solid rgba(255,255,255,0.7);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  background: #fff;
+  color: #2d5a3d;
+  border-color: #fff;
+}
+
+.btn-outline {
+  display: inline-block;
+  background: transparent;
+  color: #2d5a3d;
+  padding: 13px 36px;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: 1.5px solid #2d5a3d;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background: #2d5a3d;
+  color: #fff;
+}
+
+/* ── Card hover ── */
+.card-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px rgba(45, 90, 61, 0.13);
+}
+
+/* ── Hero slider dots ── */
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+.hero-dot.active {
+  background: #fff;
+  width: 28px;
+  border-radius: 4px;
+}
+
+/* ── Swiper nav override ── */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #2d5a3d !important;
+  background: #fff;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50%;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 14px !important;
+  font-weight: 700;
 }

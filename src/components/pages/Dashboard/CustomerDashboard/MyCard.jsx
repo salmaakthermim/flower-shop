@@ -16,7 +16,7 @@ const MyCart = () => {
       if (!user?.email) return;
 
       const res = await axios.get(
-        `https://flower-shop-server-nu.vercel.app/cart/${user.email}`
+        `http://localhost:5000/cart/${user.email}`
       );
 
       setCartItems(res.data);
@@ -34,7 +34,7 @@ const MyCart = () => {
   const updateQuantity = async (id, qty) => {
     if (qty < 1) return;
 
-    await axios.patch(`https://flower-shop-server-nu.vercel.app/cart/${id}`, {
+    await axios.patch(`http://localhost:5000/cart/${id}`, {
       quantity: qty,
     });
 
@@ -42,12 +42,12 @@ const MyCart = () => {
   };
 
   const removeItem = async (id) => {
-    await axios.delete(`https://flower-shop-server-nu.vercel.app/cart/${id}`);
+    await axios.delete(`http://localhost:5000/cart/${id}`);
     fetchCart();
   };
 
   const checkout = async () => {
-    await axios.post("https://flower-shop-server-nu.vercel.app/checkout", {
+    await axios.post("http://localhost:5000/checkout", {
       email: user.email, // ✅ now correct
       name: "Customer Name",
       phone: "01700000000",
