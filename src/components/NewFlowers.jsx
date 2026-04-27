@@ -15,6 +15,7 @@ export default function NewFlowers() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [comment, setComment] = useState("");
 
   const navigate = useNavigate();
@@ -131,7 +132,8 @@ export default function NewFlowers() {
       name,
       email: user.email,
       phone,
-      comment,
+      address,
+      note: comment,
       items: cart.map((item) => ({
         _id: item.productId,
         name: item.name,
@@ -166,6 +168,7 @@ export default function NewFlowers() {
     setCart([]);
     setOpen(false);
     setPhone("");
+    setAddress("");
     setComment("");
 
     navigate(`/order-success/${data.order._id}`);
@@ -315,6 +318,12 @@ export default function NewFlowers() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Phone Number *"
+                    className="w-full bg-white border border-[#c8e0d0] px-4 py-3 text-sm text-[#1a2e1a] placeholder-[#8aaa8a] focus:outline-none focus:border-[#2d5a3d] transition rounded-lg"
+                  />
+                  <input
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Delivery Address *"
                     className="w-full bg-white border border-[#c8e0d0] px-4 py-3 text-sm text-[#1a2e1a] placeholder-[#8aaa8a] focus:outline-none focus:border-[#2d5a3d] transition rounded-lg"
                   />
                   <textarea

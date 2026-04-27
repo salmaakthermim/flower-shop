@@ -1,155 +1,151 @@
 import { useState } from "react";
-import { googleLogin, registerUser } from "../../../api/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("customer");
-  const [avatar, setAvatar] = useState(""); // নতুন: Avatar URL
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "customer" });
+  const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
+  const { registerUser, googleLogin } = useAuth();
   const navigate = useNavigate();
+
+  const redirectByRole = (role) => {
+    if (role === "admin") navigate("/dashboard/admin", { replace: true });
+    else if (role === "customer") navigate("/dashboard/customer", { replace: true });
+    else navigate("/dashboard/guest", { replace: true });
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      // API call
-      const newUser = await registerUser({ name, email, password, role, avatar });
-
-      // ✅ localStorage-এ save করা
-      localStorage.setItem("role", newUser.role);
-      localStorage.setItem("name", newUser.name);
-      localStorage.setItem("avatar", newUser.avatar || avatar); // fallback to input URL
-
-      toast.success("Registration successful 🌸");
-      navigate("/dashboard");
+      const newUser = await registerUser(form.name, form.email, form.password, form.role);
+      toast.success("Account created! 🌸");
+      redirectByRole(newUser.role);
     } catch (err) {
-      console.log(err);
-      toast.error("Registration failed ❌");
+      toast.error(err.message || "Registration failed");
     } finally {
       setLoading(false);
     }
   };
+
   const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
     try {
       const loggedUser = await googleLogin();
-
-      if (!loggedUser || !loggedUser.role) {
-        throw new Error("User role not found");
-      }
-
-      localStorage.setItem("role", loggedUser.role);
-
-      toast.success("Google Login Successful 🌸");
-
-      if (loggedUser.role === "admin") {
-        navigate("/dashboard/admin", { replace: true });
-      } else if (loggedUser.role === "customer") {
-        navigate("/dashboard/customer", { replace: true });
-      } else {
-        navigate("/dashboard/guest", { replace: true });
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Google Login Failed ❌");
+      toast.success("Google login successful 🌸");
+      redirectByRole(loggedUser.role);
+    } catch {
+      toast.error("Google login failed");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
-      style={{
-        backgroundImage:
-          "url('https://t4.ftcdn.net/jpg/04/61/56/75/360_F_461567541_ssas8kkgKtBJZSVsEzLLB4jMoVn8tU6Y.jpg')",
-      }}
-    >
-      <div className="absolute inset-0 bg-black/40"></div>
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('https://images.pexels.com/photos/56866/garden-rose-red-pink-56866.jpeg?auto=compress&cs=tinysrgb&w=1600')" }}
+      />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-[#1a2e1a]/55 backdrop-blur-[2px]" />
 
-      <div className="relative bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl w-full max-w-md p-8 z-10">
-        <h2 className="text-3xl font-bold text-center text-pink-600 mb-6">
-          Join Flower Shop
-        </h2>
+      {/* Blobs */}
+      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#e8a0b4]/20 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[#2d5a3d]/30 blur-3xl pointer-events-none" />
+
+      <div className="relative bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl w-full max-w-md p-8 border border-white/50">
+
+        {/* Header */}
+        <div className="text-center mb-8">
+          <p className="font-serif text-2xl tracking-widest text-[#2d5a3d]">FIORELLO</p>
+          <p className="text-[9px] tracking-[0.35em] text-[#e8a0b4] uppercase mt-0.5">Flower Studio</p>
+          <h2 className="mt-5 text-2xl font-serif font-medium text-[#1a2e1a]">Create Account</h2>
+          <p className="text-sm text-[#4a6a4a] mt-1">Join us and start ordering beautiful flowers</p>
+        </div>
 
         <form onSubmit={handleRegister} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-          />
+          {[
+            { key: "name", label: "Full Name", type: "text", placeholder: "Your name" },
+            { key: "email", label: "Email", type: "email", placeholder: "your@email.com" },
+          ].map(({ key, label, type, placeholder }) => (
+            <div key={key}>
+              <label className="text-[10px] tracking-widest uppercase text-[#4a6a4a] font-medium block mb-1.5">{label}</label>
+              <input
+                type={type}
+                value={form[key]}
+                onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                placeholder={placeholder}
+                required
+                className="w-full border border-[#c8e0d0] px-4 py-3 rounded-xl text-sm text-[#1a2e1a] focus:outline-none focus:border-[#2d5a3d] transition placeholder-[#8aaa8a]"
+              />
+            </div>
+          ))}
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-          />
+          {/* Password with eye toggle */}
+          <div>
+            <label className="text-[10px] tracking-widest uppercase text-[#4a6a4a] font-medium block mb-1.5">Password</label>
+            <div className="relative">
+              <input
+                type={showPass ? "text" : "password"}
+                value={form.password}
+                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                placeholder="••••••••"
+                required
+                className="w-full border border-[#c8e0d0] px-4 py-3 pr-11 rounded-xl text-sm text-[#1a2e1a] focus:outline-none focus:border-[#2d5a3d] transition placeholder-[#8aaa8a]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass(s => !s)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4a6a4a] hover:text-[#2d5a3d] transition"
+              >
+                {showPass ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </button>
+            </div>
+          </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-          />
+          <div>
+            <label className="text-[10px] tracking-widest uppercase text-[#4a6a4a] font-medium block mb-1.5">Account Type</label>
+            <select
+              value={form.role}
+              onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
+              className="w-full border border-[#c8e0d0] px-4 py-3 rounded-xl text-sm text-[#1a2e1a] focus:outline-none focus:border-[#2d5a3d] transition bg-white"
+            >
+              <option value="customer">Customer</option>
+              <option value="guest">Guest</option>
+            </select>
+          </div>
 
-          {/* নতুন: Avatar URL input */}
-          <input
-            type="text"
-            placeholder="Avatar URL (image link)"
-            value={avatar}
-            onChange={(e) => setAvatar(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-          />
-
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-          >
-            <option value="customer">Customer</option>
-            <option value="admin">Admin</option>
-            <option value="guest">Guest</option>
-          </select>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition-colors"
-          >
-            {loading ? "Registering..." : "Register"}
+          <button type="submit" disabled={loading} className="w-full btn-primary py-3.5 text-[11px] mt-2">
+            {loading ? "Creating account..." : "Create Account"}
           </button>
         </form>
-        {/* Divider */}
-        <div className="my-4 text-center text-gray-500">OR</div>
 
-
+        <div className="flex items-center gap-3 my-5">
+          <div className="flex-1 h-px bg-[#e8f0ea]" />
+          <span className="text-xs text-[#4a6a4a]">or</span>
+          <div className="flex-1 h-px bg-[#e8f0ea]" />
+        </div>
 
         <button
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+          disabled={googleLoading}
+          className="w-full flex items-center justify-center gap-3 border border-[#c8e0d0] px-4 py-3 rounded-xl text-sm text-[#1a2e1a] hover:bg-[#f0f7f2] transition font-medium"
         >
-          <FcGoogle size={22} />
-          Continue with Google
+          <FcGoogle size={20} />
+          {googleLoading ? "Connecting..." : "Continue with Google"}
         </button>
 
-        <p className="text-center mt-4 text-sm">
+        <p className="text-center mt-6 text-sm text-[#4a6a4a]">
           Already have an account?{" "}
-          <a href="/login" className="text-pink-500 underline">
-            Login
-          </a>
+          <Link to="/login" className="text-[#2d5a3d] font-medium hover:underline">Sign in</Link>
         </p>
       </div>
     </div>

@@ -1,146 +1,143 @@
 import { useState } from "react";
-// import { loginUser } from "../../../api/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { googleLogin, loginUser } from "../../../api/auth";
-
 import { FcGoogle } from "react-icons/fc";
-
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
+  const { loginUser, googleLogin } = useAuth();
   const navigate = useNavigate();
+
+  const redirectByRole = (role) => {
+    if (role === "admin") navigate("/dashboard/admin", { replace: true });
+    else if (role === "customer") navigate("/dashboard/customer", { replace: true });
+    else navigate("/dashboard/guest", { replace: true });
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const loggedUser = await loginUser({ email, password });
-
-      if (!loggedUser || !loggedUser.role) {
-        throw new Error("User role not found");
-      }
-
-      // ✅ role save
-      localStorage.setItem("role", loggedUser.role);
-
-      toast.success("Login successful 🌷");
-
-      // ✅ role অনুযায়ী redirect
-      if (loggedUser.role === "admin") {
-        navigate("/dashboard/admin", { replace: true });
-      } else if (loggedUser.role === "customer") {
-        navigate("/dashboard/customer", { replace: true });
-      } else {
-        navigate("/dashboard/guest", { replace: true });
-      }
+      const loggedUser = await loginUser(email, password);
+      toast.success("Welcome back! 🌸");
+      redirectByRole(loggedUser.role);
     } catch (err) {
-      console.error(err);
-      toast.error(err.message || "Login failed ❌");
+      toast.error(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
-
-
-
   };
 
   const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
     try {
       const loggedUser = await googleLogin();
-
-      if (!loggedUser || !loggedUser.role) {
-        throw new Error("User role not found");
-      }
-
-      localStorage.setItem("role", loggedUser.role);
-
-      toast.success("Google Login Successful 🌸");
-
-      if (loggedUser.role === "admin") {
-        navigate("/dashboard/admin", { replace: true });
-      } else if (loggedUser.role === "customer") {
-        navigate("/dashboard/customer", { replace: true });
-      } else {
-        navigate("/dashboard/guest", { replace: true });
-      }
+      toast.success("Google login successful 🌸");
+      redirectByRole(loggedUser.role);
     } catch (err) {
-      console.error(err);
-      toast.error("Google Login Failed ❌");
+      toast.error("Google login failed");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
-
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
-      style={{
-        backgroundImage:
-          "url('https://image.slidesdocs.com/responsive-images/background/pink-flowers-watercolor-nature-simple-floral-powerpoint-background_58c487484c__960_540.jpg')",
-      }}
-    >
-      <div className="absolute inset-0 bg-black/40"></div>
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1600')" }}
+      />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-[#1a2e1a]/60 backdrop-blur-[2px]" />
 
-      <div className="relative bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl w-full max-w-md p-8 z-10">
-        <h2 className="text-3xl font-bold text-center text-pink-600 mb-6">
-          Flower Shop Login
-        </h2>
+      {/* Blobs */}
+      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#e8a0b4]/20 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[#2d5a3d]/30 blur-3xl pointer-events-none" />
 
+      <div className="relative bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl w-full max-w-md p-8 border border-white/50">
+
+        {/* Header */}
+        <div className="text-center mb-8">
+          <p className="font-serif text-2xl tracking-widest text-[#2d5a3d]">FIORELLO</p>
+          <p className="text-[9px] tracking-[0.35em] text-[#e8a0b4] uppercase mt-0.5">Flower Studio</p>
+          <h2 className="mt-5 text-2xl font-serif font-medium text-[#1a2e1a]">Welcome Back</h2>
+          <p className="text-sm text-[#4a6a4a] mt-1">Sign in to your account</p>
+        </div>
+
+        {/* Form */}
         <form onSubmit={handleLogin} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-          />
+          <div>
+            <label className="text-[10px] tracking-widest uppercase text-[#4a6a4a] font-medium block mb-1.5">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              required
+              className="w-full border border-[#c8e0d0] px-4 py-3 rounded-xl text-sm text-[#1a2e1a] focus:outline-none focus:border-[#2d5a3d] transition placeholder-[#8aaa8a]"
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-          />
+          <div>
+            <label className="text-[10px] tracking-widest uppercase text-[#4a6a4a] font-medium block mb-1.5">Password</label>
+            <div className="relative">
+              <input
+                type={showPass ? "text" : "password"}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full border border-[#c8e0d0] px-4 py-3 pr-11 rounded-xl text-sm text-[#1a2e1a] focus:outline-none focus:border-[#2d5a3d] transition placeholder-[#8aaa8a]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass(s => !s)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4a6a4a] hover:text-[#2d5a3d] transition"
+              >
+                {showPass ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </button>
+            </div>
+          </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition-colors"
+            className="w-full btn-primary py-3.5 text-[11px] mt-2"
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
-
-          {/* Divider */}
-          <div className="my-4 text-center text-gray-500">OR</div>
-
-
-
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <FcGoogle size={22} />
-            Continue with Google
-          </button>
-
-
-
-
         </form>
 
-        <p className="text-center mt-4 text-sm">
-          New here?{" "}
-          <a href="/register" className="text-pink-500 underline">
-            Create Account
-          </a>
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-5">
+          <div className="flex-1 h-px bg-[#e8f0ea]" />
+          <span className="text-xs text-[#4a6a4a]">or</span>
+          <div className="flex-1 h-px bg-[#e8f0ea]" />
+        </div>
+
+        {/* Google */}
+        <button
+          onClick={handleGoogleLogin}
+          disabled={googleLoading}
+          className="w-full flex items-center justify-center gap-3 border border-[#c8e0d0] px-4 py-3 rounded-xl text-sm text-[#1a2e1a] hover:bg-[#f0f7f2] transition font-medium"
+        >
+          <FcGoogle size={20} />
+          {googleLoading ? "Connecting..." : "Continue with Google"}
+        </button>
+
+        <p className="text-center mt-6 text-sm text-[#4a6a4a]">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-[#2d5a3d] font-medium hover:underline">
+            Register free
+          </Link>
         </p>
       </div>
     </div>

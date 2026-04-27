@@ -19,6 +19,9 @@ import Profile from "../components/pages/Dashboard/Profile";
 import AdminDashboard from "../components/pages/Dashboard/AdminDashboard/AdminDashboard";
 import CustomerDashboard from "../components/pages/Dashboard/CustomerDashboard/CustomerDashboard";
 import GuestDashboard from "../components/pages/Dashboard/GuestDashboard/GuestDashboard";
+import GuestBrowse from "../components/pages/Dashboard/GuestDashboard/GuestBrowse";
+import GuestWishlist from "../components/pages/Dashboard/GuestDashboard/GuestWishlist";
+import GuestAbout from "../components/pages/Dashboard/GuestDashboard/GuestAbout";
 
 // admin pages
 import AddFlower from "../components/pages/Dashboard/AdminDashboard/AddFlower";
@@ -31,6 +34,7 @@ import ManageUsers from "../components/pages/Dashboard/AdminDashboard/ManageUser
 import OrderSuccess from "../components/OrderSuccess";
 import MyOrders from "../components/pages/Dashboard/CustomerDashboard/MyOrders";
 import MyCard from "../components/pages/Dashboard/CustomerDashboard/MyCard";
+import MyWishlist from "../components/pages/Dashboard/CustomerDashboard/MyWishlist";
 import FlowerDetails from "../components/FlowerDetails";
 import AllFlowers from "../components/pages/AllFlowers";
 import Page from "../components/Page";
@@ -105,12 +109,21 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <CustomerDashboard /> },
           { path: "my-orders", element: <MyOrders /> },
-          { path: "my-cards", element: <MyCard></MyCard> },
+          { path: "my-cards", element: <MyCard /> },
+          { path: "wishlist", element: <MyWishlist /> },
         ],
       },
 
       // ---------- GUEST ----------
-      { path: "guest", element: <GuestDashboard /> },
+      {
+        path: "guest",
+        children: [
+          { index: true, element: <GuestDashboard /> },
+          { path: "browse", element: <GuestBrowse /> },
+          { path: "wishlist", element: <GuestWishlist /> },
+          { path: "about", element: <GuestAbout /> },
+        ],
+      },
     ],
   },
 ]);

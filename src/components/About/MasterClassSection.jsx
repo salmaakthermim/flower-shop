@@ -1,95 +1,87 @@
-import React from "react";
+import { motion } from "framer-motion";
+
+const classes = [
+  {
+    title: "Spring Flowers Composition",
+    desc: "Create your own flower arrangement with tulips and daffodils.",
+    price: "$50",
+    img: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop",
+  },
+  {
+    title: "Rosy Roses Composition",
+    desc: "Learn how to work with roses of different species.",
+    price: "$60",
+    img: "https://images.pexels.com/photos/56866/garden-rose-red-pink-56866.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop",
+  },
+  {
+    title: "Autumn Bouquet Workshop",
+    desc: "Seasonal arrangements using warm-toned autumn blooms.",
+    price: "$55",
+    img: "https://images.pexels.com/photos/1407305/pexels-photo-1407305.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop",
+  },
+];
 
 const MasterClassSection = () => {
   return (
-    <section className="bg-[#f7f3ee] py-24">
+    <section className="bg-[#f0f7f2] py-24">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-        {/* LEFT CONTENT */}
-        <div>
-          <span className="text-sm italic text-gray-400">
-            Master classes
-          </span>
-
-          <h2 className="text-4xl md:text-5xl font-serif text-gray-800 mt-4 leading-snug">
-            Registration for Master <br /> Classes in Sami's Flowers
+        <motion.div
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9 }}
+        >
+          <span className="section-label">Master Classes</span>
+          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-[#1a2e1a] leading-snug mb-2">
+            Learn to Create <em className="text-[#e8a0b4] not-italic">Beautiful Bouquets</em>
           </h2>
-
-          <div className="w-12 h-[2px] bg-gray-400 my-6"></div>
-
-          <p className="text-gray-600 font-medium">
-            Want to learn how to create bouquets yourself?
+          <div className="w-14 h-[2px] bg-[#e8a0b4] my-6 rounded-full" />
+          <p className="text-[#4a6a4a] leading-relaxed mb-8">
+            From time to time, we hold master classes for everyone who wants to learn how to
+            work with flowers and create unique bouquets.
           </p>
 
-          <p className="text-gray-500 mt-4 leading-relaxed max-w-xl">
-            From time to time, we hold master classes for everyone who wants to
-            learn how to work with flowers and create unique bouquets.
-          </p>
-
-          {/* CLASS LIST */}
-          <div className="mt-10 space-y-6">
-
-            {/* ITEM 1 */}
-            <div className="flex items-center gap-4">
-              <img
-                src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6"
-                alt=""
-                className="w-14 h-14 rounded-full object-cover"
-              />
-
-              <div className="flex-1">
-                <h4 className="font-serif text-lg text-gray-700">
-                  Spring Flowers Composition
-                </h4>
-                <p className="text-sm text-gray-500">
-                  Create your own flower arrangement with tulips and daffodils.
-                </p>
-              </div>
-
-              <span className="font-serif text-lg text-gray-700">
-                $50
-              </span>
-            </div>
-
-            {/* ITEM 2 */}
-            <div className="flex items-center gap-4">
-              <img
-                src="https://images.unsplash.com/photo-1519681393784-d120267933ba"
-                alt=""
-                className="w-14 h-14 rounded-full object-cover"
-              />
-
-              <div className="flex-1">
-                <h4 className="font-serif text-lg text-gray-700">
-                  Rosy Roses Composition
-                </h4>
-                <p className="text-sm text-gray-500">
-                  Learn how to work with roses of different species.
-                </p>
-              </div>
-
-              <span className="font-serif text-lg text-gray-700">
-                $60
-              </span>
-            </div>
+          <div className="space-y-4 mb-8">
+            {classes.map((c, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-4 bg-white border border-[#e8f0ea] p-4 rounded-xl"
+              >
+                <img src={c.img} alt={c.title} className="w-12 h-12 rounded-full object-cover flex-shrink-0 ring-2 ring-[#e8a0b4] ring-offset-1" />
+                <div className="flex-1">
+                  <h4 className="font-medium text-[#1a2e1a] text-sm">{c.title}</h4>
+                  <p className="text-xs text-[#4a6a4a] mt-0.5">{c.desc}</p>
+                </div>
+                <span className="font-serif text-lg text-[#2d5a3d] font-medium flex-shrink-0">{c.price}</span>
+              </motion.div>
+            ))}
           </div>
 
-          {/* BUTTON */}
-          <button className="mt-10 px-8 py-3 bg-[#7a775f] text-white text-sm tracking-widest uppercase hover:bg-[#6a6854] transition">
-            Sign Up
-          </button>
-        </div>
-        
-         {/* RIGHT IMAGE */}
-         <div className="flex ml-40 relative w-[300px] md:w-[380px] h-[520px]  justify-center rounded-[180px] border border-[#ddd8cc]">
-          <div className="w-[260px] md:w-[330px] h-[480px] rounded-[160px] mt-4 overflow-hidden">
-            <img
-              src="https://cdn.pixabay.com/photo/2017/10/05/06/46/asia-2818564_1280.jpg"
-              alt="Flower Studio"
-              className="w-full h-full object-cover"
-            />
+          <button className="btn-primary">Sign Up for a Class</button>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9 }}
+          className="flex justify-center lg:justify-end"
+        >
+          <div className="relative w-[300px] md:w-[360px] h-[500px] rounded-full border-2 border-[#e8a0b4]/30 flex items-center justify-center">
+            <div className="w-[260px] md:w-[320px] h-[460px] rounded-full overflow-hidden shadow-2xl">
+              <img
+                src="https://images.pexels.com/photos/56866/garden-rose-red-pink-56866.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop"
+                alt="Master Class"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

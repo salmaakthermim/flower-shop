@@ -16,7 +16,7 @@ const slides = [
   },
   {
     id: 2,
-    image: "https://thumbs.dreamstime.com/b/flower-frame-banner-beautiful-flowers-background-wedding-scene-173630820.jpg",
+    image: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop&crop=center",
     label: "Wedding Specials",
     title: "Make Your Day\nUnforgettable",
     subtitle: "Elegant bridal bouquets and floral arrangements for your special day.",

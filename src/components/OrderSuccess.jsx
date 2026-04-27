@@ -96,26 +96,30 @@ export default function OrderSuccess() {
             transition={{ delay: 0.2 }}
             className="bg-white border border-[#e8f0ea] rounded-2xl p-7"
           >
-            <h2 className="font-serif text-xl text-[#1a2e1a] mb-6">Customer Details</h2>
+            <h2 className="font-serif text-xl text-[#1a2e1a] mb-6">Delivery Details</h2>
             <div className="space-y-3 text-sm text-[#4a6a4a]">
-              <div>
-                <p className="text-[10px] tracking-widest text-[#2d5a3d] uppercase mb-0.5">Name</p>
-                <p className="text-[#1a2e1a] font-medium">{order.customer?.name}</p>
-              </div>
-              <div>
-                <p className="text-[10px] tracking-widest text-[#2d5a3d] uppercase mb-0.5">Email</p>
-                <p className="text-[#1a2e1a]">{order.customer?.email}</p>
-              </div>
-              <div>
-                <p className="text-[10px] tracking-widest text-[#2d5a3d] uppercase mb-0.5">Phone</p>
-                <p className="text-[#1a2e1a]">{order.customer?.phone}</p>
-              </div>
-              {order.customer?.comment && (
-                <div>
-                  <p className="text-[10px] tracking-widest text-[#2d5a3d] uppercase mb-0.5">Note</p>
-                  <p className="text-[#1a2e1a]">{order.customer.comment}</p>
+              {[
+                { label: "Name",  value: order.customer?.name },
+                { label: "Email", value: order.customer?.email },
+                { label: "Phone", value: order.customer?.phone },
+                { label: "Address", value: order.deliveryAddress },
+                { label: "Note", value: order.deliveryNote },
+              ].filter(i => i.value).map(({ label, value }) => (
+                <div key={label}>
+                  <p className="text-[10px] tracking-widest text-[#2d5a3d] uppercase mb-0.5">{label}</p>
+                  <p className="text-[#1a2e1a] font-medium">{value}</p>
+                </div>
+              ))}
+
+              {order.estimatedDelivery && order.orderStatus !== "delivered" && (
+                <div className="bg-[#f0f7f2] rounded-xl px-4 py-2.5 mt-2">
+                  <p className="text-[10px] tracking-widest text-[#2d5a3d] uppercase mb-0.5">Est. Delivery</p>
+                  <p className="text-[#1a2e1a] font-medium text-sm">
+                    🚚 {new Date(order.estimatedDelivery).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+                  </p>
                 </div>
               )}
+
               <div className="pt-2">
                 <span className="inline-block bg-[#f0f7f2] text-[#2d5a3d] text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full font-medium border border-[#c8e0d0]">
                   {order.orderStatus || "Pending"}

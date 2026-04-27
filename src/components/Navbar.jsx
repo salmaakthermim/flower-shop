@@ -107,33 +107,48 @@ const NavItem = ({ to, text }) => (
   </Link>
 );
 
-const UserDropdown = ({ user, dropdown, setDropdown, handleLogout }) => (
-  <div className="relative">
-    {user?.avatar ? (
-      <img
-        src={user.avatar}
-        alt="avatar"
-        className="w-9 h-9 rounded-full cursor-pointer ring-2 ring-[#e8a0b4] ring-offset-1"
+const UserDropdown = ({ user, dropdown, setDropdown, handleLogout }) => {
+  const avatarSrc = user?.avatar || user?.photoURL || null;
+  const initial = (user?.name || user?.email || "U")[0].toUpperCase();
+
+  return (
+    <div className="relative">
+      <button
         onClick={() => setDropdown(!dropdown)}
-      />
-    ) : (
-      <FaUserCircle
-        size={28}
-        className="cursor-pointer text-[#2d5a3d]"
-        onClick={() => setDropdown(!dropdown)}
-      />
-    )}
-    {dropdown && (
-      <div className="absolute right-0 mt-3 w-44 bg-white shadow-xl border border-[#e8f0ea] py-2 z-50 rounded-sm">
-        <Link to="/dashboard" className="block px-5 py-2.5 text-[11px] tracking-widest hover:bg-[#f0f7f2] hover:text-[#2d5a3d] transition">
-          DASHBOARD
-        </Link>
-        <button onClick={handleLogout} className="block w-full text-left px-5 py-2.5 text-[11px] tracking-widest hover:bg-[#f0f7f2] hover:text-[#2d5a3d] transition">
-          LOGOUT
-        </button>
-      </div>
-    )}
-  </div>
-);
+        className="flex items-center gap-2 focus:outline-none"
+      >
+        {avatarSrc ? (
+          <img
+            src={avatarSrc}
+            alt="avatar"
+            className="w-9 h-9 rounded-full object-cover ring-2 ring-[#e8a0b4] ring-offset-1"
+            onError={e => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }}
+          />
+        ) : null}
+        <div
+          className="w-9 h-9 rounded-full bg-[#2d5a3d] flex items-center justify-center text-white font-serif text-sm ring-2 ring-[#e8a0b4] ring-offset-1"
+          style={{ display: avatarSrc ? "none" : "flex" }}
+        >
+          {initial}
+        </div>
+      </button>
+
+      {dropdown && (
+        <div className="absolute right-0 mt-3 w-48 bg-white shadow-xl border border-[#e8f0ea] py-2 z-50 rounded-xl">
+          <div className="px-4 py-2 border-b border-[#e8f0ea] mb-1">
+            <p className="text-xs font-medium text-[#1a2e1a] truncate">{user?.name || "User"}</p>
+            <p className="text-[10px] text-[#4a6a4a] truncate">{user?.email}</p>
+          </div>
+          <Link to="/dashboard" className="block px-4 py-2.5 text-[11px] tracking-widest hover:bg-[#f0f7f2] hover:text-[#2d5a3d] transition">
+            DASHBOARD
+          </Link>
+          <button onClick={handleLogout} className="block w-full text-left px-4 py-2.5 text-[11px] tracking-widest hover:bg-[#f0f7f2] hover:text-[#c0506a] transition">
+            LOGOUT
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default Navbar;
