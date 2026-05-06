@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaLeaf, FaImage, FaTag, FaAlignLeft, FaCheckCircle } from "react-icons/fa";
 
@@ -28,7 +28,7 @@ export default function AddFlower() {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/flowers", {
+      const res = await fetch("https://flower-shop-server-nu.vercel.app/flowers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

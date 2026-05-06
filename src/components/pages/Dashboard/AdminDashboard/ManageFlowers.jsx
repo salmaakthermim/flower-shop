@@ -12,7 +12,7 @@ export default function ManageFlowers() {
 
   const fetchFlowers = async () => {
     try {
-      const res = await fetch("http://localhost:5000/flowers");
+      const res = await fetch("https://flower-shop-server-nu.vercel.app/flowers");
       setFlowers(await res.json());
     } catch { toast.error("Failed to load flowers"); }
     finally { setLoading(false); }
@@ -27,7 +27,7 @@ export default function ManageFlowers() {
       cancelButtonColor: "#6b7280", confirmButtonText: "Delete",
     });
     if (!result.isConfirmed) return;
-    const res = await fetch(`http://localhost:5000/flowers/${id}`, { method: "DELETE" });
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/flowers/${id}`, { method: "DELETE" });
     if (res.ok) { toast.success("Flower deleted"); setFlowers(f => f.filter(x => x._id !== id)); }
   };
 
@@ -41,7 +41,7 @@ export default function ManageFlowers() {
     e.preventDefault();
     setUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5000/flowers/${editId}`, {
+      const res = await fetch(`https://flower-shop-server-nu.vercel.app/flowers/${editId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

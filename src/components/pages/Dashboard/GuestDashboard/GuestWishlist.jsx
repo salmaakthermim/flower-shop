@@ -1,6 +1,6 @@
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { FaHeart, FaTrash } from "react-icons/fa";
 
 export default function GuestWishlist() {
@@ -14,7 +14,7 @@ export default function GuestWishlist() {
 
   useEffect(() => {
     if (wishlist.length === 0) { setLoading(false); return; }
-    fetch("http://localhost:5000/flowers")
+    fetch("https://flower-shop-server-nu.vercel.app/flowers")
       .then(r => r.json())
       .then(d => setFlowers(Array.isArray(d) ? d.filter(f => wishlist.includes(f._id)) : []))
       .catch(() => {})

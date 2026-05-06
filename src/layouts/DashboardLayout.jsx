@@ -8,54 +8,12 @@ import {
   FaHeart, FaInfoCircle, FaChevronRight
 } from "react-icons/fa";
 
-const DashboardLayout = () => {
-  const { user, logoutUser } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [isOpen, setIsOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-
-  const role = user?.role || localStorage.getItem("role");
-
-  // Close drawer on route change (mobile)
-  useEffect(() => { setIsOpen(false); }, [location.pathname]);
-
-  const handleLogout = async () => {
-    await logoutUser?.();
-    localStorage.removeItem("role");
-    navigate("/login");
-  };
-
-  const adminLinks = [
-    { to: "/dashboard/admin",                  label: "Overview",       icon: <FaHome size={15} />,        end: true },
-    { to: "/dashboard/admin/add-flower",       label: "Add Flower",     icon: <FaPlusCircle size={15} /> },
-    { to: "/dashboard/admin/manage-flowers",   label: "Manage Flowers", icon: <FaBoxOpen size={15} /> },
-    { to: "/dashboard/admin/all-orders",       label: "All Orders",     icon: <FaClipboardList size={15} /> },
-    { to: "/dashboard/admin/manage-users",     label: "Manage Users",   icon: <FaUsers size={15} /> },
-  ];
-
-  const customerLinks = [
-    { to: "/dashboard/customer",               label: "Overview",   icon: <FaHome size={15} />,        end: true },
-    { to: "/dashboard/customer/my-orders",     label: "My Orders",  icon: <FaShoppingBag size={15} /> },
-    { to: "/dashboard/customer/my-cards",      label: "My Cart",    icon: <FaShoppingCart size={15} /> },
-    { to: "/dashboard/customer/wishlist",      label: "Wishlist",   icon: <FaHeart size={15} /> },
-  ];
-
-  const guestLinks = [
-    { to: "/dashboard/guest",                  label: "Overview",        icon: <FaHome size={15} />,       end: true },
-    { to: "/dashboard/guest/browse",           label: "Browse Flowers",  icon: <FaSearch size={15} /> },
-    { to: "/dashboard/guest/wishlist",         label: "Wishlist",        icon: <FaHeart size={15} /> },
-    { to: "/dashboard/guest/about",            label: "About Us",        icon: <FaInfoCircle size={15} /> },
-  ];
-
-  const links = role === "admin" ? adminLinks : role === "customer" ? customerLinks : guestLinks;
-
+// ── Sidebar content extracted as a standalone component ──
+const SidebarContent = ({ collapsed, setCollapsed, setIsOpen, links, role, user, handleLogout }) => {
   const avatarInitial = (user?.name || user?.email || "U")[0].toUpperCase();
 
-  // ── Sidebar inner content (shared between desktop & mobile drawer) ──
-  const SidebarContent = () => (
+  return (
     <div className="flex flex-col h-full">
-
       {/* Logo */}
       <div className={`border-b border-white/10 transition-all duration-300 ${collapsed ? "px-3 py-5" : "px-6 py-6"}`}>
         <div className="flex items-center justify-between">
@@ -70,14 +28,12 @@ const DashboardLayout = () => {
               <FaLeaf className="text-[#e8a0b4]" size={13} />
             </div>
           )}
-          {/* Desktop collapse toggle */}
           <button
             onClick={() => setCollapsed(c => !c)}
             className="hidden lg:flex w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 items-center justify-center text-white/50 hover:text-white transition flex-shrink-0"
           >
             <FaChevronRight size={10} className={`transition-transform duration-300 ${collapsed ? "" : "rotate-180"}`} />
           </button>
-          {/* Mobile close */}
           <button onClick={() => setIsOpen(false)} className="lg:hidden text-white/60 hover:text-white">
             <FaTimes size={18} />
           </button>
@@ -85,7 +41,7 @@ const DashboardLayout = () => {
       </div>
 
       {/* User info */}
-      {!collapsed && (
+      {!collapsed ? (
         <div className="px-5 py-4 border-b border-white/10">
           <div className="flex items-center gap-3">
             {user?.avatar ? (
@@ -101,8 +57,7 @@ const DashboardLayout = () => {
             </div>
           </div>
         </div>
-      )}
-      {collapsed && (
+      ) : (
         <div className="px-3 py-4 border-b border-white/10 flex justify-center">
           {user?.avatar ? (
             <img src={user.avatar} className="w-8 h-8 rounded-full object-cover ring-2 ring-[#e8a0b4]" alt="avatar" />
@@ -117,23 +72,16 @@ const DashboardLayout = () => {
       {/* Nav links */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {links.map(({ to, label, icon, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
+          <NavLink key={to} to={to} end={end}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-xl text-[11px] tracking-widest uppercase font-medium transition-all duration-200 group ${
-                isActive
-                  ? "bg-[#2d5a3d] text-white shadow-sm"
-                  : "text-white/50 hover:text-white hover:bg-white/5"
+                isActive ? "bg-[#2d5a3d] text-white shadow-sm" : "text-white/50 hover:text-white hover:bg-white/5"
               } ${collapsed ? "justify-center" : ""}`
             }
           >
             {({ isActive }) => (
               <>
-                <span className={`flex-shrink-0 transition-transform duration-200 ${!isActive ? "group-hover:scale-110" : ""}`}>
-                  {icon}
-                </span>
+                <span className={`flex-shrink-0 transition-transform duration-200 ${!isActive ? "group-hover:scale-110" : ""}`}>{icon}</span>
                 {!collapsed && <span className="truncate">{label}</span>}
               </>
             )}
@@ -142,7 +90,7 @@ const DashboardLayout = () => {
       </nav>
 
       {/* Bottom */}
-      <div className={`border-t border-white/10 py-4 space-y-0.5 ${collapsed ? "px-3" : "px-3"}`}>
+      <div className="border-t border-white/10 py-4 space-y-0.5 px-3">
         <NavLink to="/"
           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[11px] tracking-widest uppercase font-medium text-white/50 hover:text-white hover:bg-white/5 transition ${collapsed ? "justify-center" : ""}`}>
           <FaHome size={14} />
@@ -184,46 +132,88 @@ const DashboardLayout = () => {
       </div>
     </div>
   );
+};
+
+const DashboardLayout = () => {
+  const { user, logoutUser } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
+  const role = user?.role || localStorage.getItem("role");
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
+  const handleLogout = async () => {
+    await logoutUser?.();
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
+
+  const adminLinks = [
+    { to: "/dashboard/admin",                label: "Overview",       icon: <FaHome size={15} />,        end: true },
+    { to: "/dashboard/admin/add-flower",     label: "Add Flower",     icon: <FaPlusCircle size={15} /> },
+    { to: "/dashboard/admin/manage-flowers", label: "Manage Flowers", icon: <FaBoxOpen size={15} /> },
+    { to: "/dashboard/admin/all-orders",     label: "All Orders",     icon: <FaClipboardList size={15} /> },
+    { to: "/dashboard/admin/manage-users",   label: "Manage Users",   icon: <FaUsers size={15} /> },
+  ];
+
+  const customerLinks = [
+    { to: "/dashboard/customer",             label: "Overview",  icon: <FaHome size={15} />,        end: true },
+    { to: "/dashboard/customer/my-orders",   label: "My Orders", icon: <FaShoppingBag size={15} /> },
+    { to: "/dashboard/customer/my-cards",    label: "My Cart",   icon: <FaShoppingCart size={15} /> },
+    { to: "/dashboard/customer/wishlist",    label: "Wishlist",  icon: <FaHeart size={15} /> },
+  ];
+
+  const guestLinks = [
+    { to: "/dashboard/guest",               label: "Overview",       icon: <FaHome size={15} />,       end: true },
+    { to: "/dashboard/guest/browse",        label: "Browse Flowers", icon: <FaSearch size={15} /> },
+    { to: "/dashboard/guest/wishlist",      label: "Wishlist",       icon: <FaHeart size={15} /> },
+    { to: "/dashboard/guest/about",         label: "About Us",       icon: <FaInfoCircle size={15} /> },
+  ];
+
+  const links = role === "admin" ? adminLinks : role === "customer" ? customerLinks : guestLinks;
+  const avatarInitial = (user?.name || user?.email || "U")[0].toUpperCase();
+
+  const sidebarProps = { collapsed, setCollapsed, setIsOpen, links, role, user, handleLogout };
 
   return (
     <div className="min-h-screen flex bg-[#f0f7f2]">
 
-      {/* ── Desktop Sidebar ── */}
+      {/* Desktop Sidebar */}
       <aside className={`hidden lg:flex flex-col sticky top-0 h-screen bg-[#1a2e1a] flex-shrink-0 transition-all duration-300 ${collapsed ? "w-16" : "w-64"}`}>
-        <SidebarContent />
+        <SidebarContent {...sidebarProps} />
       </aside>
 
-      {/* ── Mobile Overlay ── */}
+      {/* Mobile Overlay */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsOpen(false)} />
       )}
 
-      {/* ── Mobile Drawer ── */}
+      {/* Mobile Drawer */}
       <aside className={`fixed top-0 left-0 h-full w-72 bg-[#1a2e1a] flex flex-col z-50 lg:hidden transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <SidebarContent />
+        <SidebarContent {...sidebarProps} />
       </aside>
 
-      {/* ── Main ── */}
+      {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Mobile top bar */}
         <header className="lg:hidden sticky top-0 z-30 bg-[#1a2e1a] text-white px-4 py-3.5 flex items-center justify-between shadow-md">
-          <button
-            onClick={() => setIsOpen(true)}
-            className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition"
-          >
+          <button onClick={() => setIsOpen(true)}
+            className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
             <FaBars size={16} />
           </button>
-
           <div className="flex items-center gap-2">
             <FaLeaf className="text-[#e8a0b4]" size={13} />
             <span className="font-serif text-base tracking-widest">FIORELLO</span>
           </div>
-
-          {/* Avatar */}
-          <div className="w-9 h-9 rounded-full bg-[#2d5a3d] flex items-center justify-center text-[#e8a0b4] font-serif text-sm ring-2 ring-[#e8a0b4]/40">
+          <div className="w-9 h-9 rounded-full bg-[#2d5a3d] flex items-center justify-center text-[#e8a0b4] font-serif text-sm ring-2 ring-[#e8a0b4]/40 overflow-hidden">
             {user?.avatar
-              ? <img src={user.avatar} className="w-full h-full rounded-full object-cover" alt="avatar" />
+              ? <img src={user.avatar} className="w-full h-full object-cover" alt="avatar" />
               : avatarInitial
             }
           </div>
@@ -234,38 +224,26 @@ const DashboardLayout = () => {
           <Outlet />
         </main>
 
-        {/* ── Mobile Bottom Nav ── */}
+        {/* Mobile Bottom Nav */}
         <nav className="lg:hidden sticky bottom-0 bg-white border-t border-[#e8f0ea] z-30 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
           <div className="flex items-center justify-around px-2 py-1">
             {links.slice(0, 4).map(({ to, label, icon, end }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
+              <NavLink key={to} to={to} end={end}
                 className={({ isActive }) =>
-                  `flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all duration-200 min-w-0 ${
-                    isActive ? "text-[#2d5a3d]" : "text-[#4a6a4a]"
-                  }`
+                  `flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all duration-200 min-w-0 ${isActive ? "text-[#2d5a3d]" : "text-[#4a6a4a]"}`
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <span className={`transition-transform duration-200 ${isActive ? "scale-110" : ""}`}>
-                      {icon}
-                    </span>
-                    <span className={`text-[9px] tracking-wide font-medium truncate max-w-[56px] text-center ${isActive ? "text-[#2d5a3d]" : "text-[#4a6a4a]"}`}>
-                      {label}
-                    </span>
+                    <span className={`transition-transform duration-200 ${isActive ? "scale-110" : ""}`}>{icon}</span>
+                    <span className={`text-[9px] tracking-wide font-medium truncate max-w-[56px] text-center ${isActive ? "text-[#2d5a3d]" : "text-[#4a6a4a]"}`}>{label}</span>
                     {isActive && <span className="w-1 h-1 rounded-full bg-[#2d5a3d] mt-0.5" />}
                   </>
                 )}
               </NavLink>
             ))}
-            {/* More button → opens drawer */}
-            <button
-              onClick={() => setIsOpen(true)}
-              className="flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl text-[#4a6a4a] transition"
-            >
+            <button onClick={() => setIsOpen(true)}
+              className="flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl text-[#4a6a4a] transition">
               <FaBars size={15} />
               <span className="text-[9px] tracking-wide font-medium">More</span>
             </button>

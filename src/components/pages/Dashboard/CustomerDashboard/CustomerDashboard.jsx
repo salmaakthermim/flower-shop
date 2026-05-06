@@ -1,7 +1,7 @@
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaShoppingBag, FaShoppingCart, FaCheckCircle, FaClock } from "react-icons/fa";
-import { motion } from "framer-motion";
 
 export default function CustomerDashboard() {
   const [orders, setOrders] = useState([]);
@@ -9,7 +9,7 @@ export default function CustomerDashboard() {
 
   useEffect(() => {
     if (!user?.email) return;
-    fetch(`http://localhost:5000/orders/customer/${user.email}`)
+    fetch(`https://flower-shop-server-nu.vercel.app/orders/customer/${user.email}`)
       .then(r => r.json())
       .then(data => setOrders(Array.isArray(data) ? data : []))
       .catch(() => {});

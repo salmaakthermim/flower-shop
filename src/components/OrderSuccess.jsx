@@ -1,6 +1,6 @@
+import { motion } from "framer-motion";
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 
 export default function OrderSuccess() {
   const { id } = useParams();
@@ -8,7 +8,7 @@ export default function OrderSuccess() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/orders/${id}`)
+    fetch(`https://flower-shop-server-nu.vercel.app/orders/${id}`)
       .then(res => {
         if (!res.ok) throw new Error("Not found");
         return res.json();

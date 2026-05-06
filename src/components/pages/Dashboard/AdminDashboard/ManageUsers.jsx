@@ -8,7 +8,7 @@ export default function ManageUsers() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://localhost:5000/users");
+      const res = await fetch("https://flower-shop-server-nu.vercel.app/users");
       setUsers(await res.json());
     } catch { toast.error("Failed to load users"); }
     finally { setLoading(false); }
@@ -22,7 +22,7 @@ export default function ManageUsers() {
       showCancelButton: true, confirmButtonColor: "#2d5a3d", confirmButtonText: "Yes",
     });
     if (!result.isConfirmed) return;
-    const res = await fetch(`http://localhost:5000/users/role/${id}`, {
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/users/role/${id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role }),
     });
@@ -30,7 +30,7 @@ export default function ManageUsers() {
   };
 
   const handleStatus = async (id, status) => {
-    const res = await fetch(`http://localhost:5000/users/status/${id}`, {
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/users/status/${id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });
@@ -43,7 +43,7 @@ export default function ManageUsers() {
       showCancelButton: true, confirmButtonColor: "#e8a0b4", confirmButtonText: "Delete",
     });
     if (!result.isConfirmed) return;
-    const res = await fetch(`http://localhost:5000/users/${id}`, { method: "DELETE" });
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/users/${id}`, { method: "DELETE" });
     if (res.ok) { toast.success("User deleted"); fetchUsers(); }
   };
 

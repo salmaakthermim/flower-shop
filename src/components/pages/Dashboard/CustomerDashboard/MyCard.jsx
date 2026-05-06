@@ -1,6 +1,6 @@
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { FaTrash, FaMapMarkerAlt } from "react-icons/fa";
 
@@ -18,7 +18,7 @@ const MyCart = () => {
   const fetchCart = async () => {
     if (!user?.email) return;
     try {
-      const res = await fetch(`http://localhost:5000/cart/${user.email}`);
+      const res = await fetch(`https://flower-shop-server-nu.vercel.app/cart/${user.email}`);
       setCartItems(await res.json());
     } catch { toast.error("Failed to load cart"); }
     finally { setLoading(false); }
@@ -28,7 +28,7 @@ const MyCart = () => {
 
   const updateQty = async (id, qty) => {
     if (qty < 1) return;
-    await fetch(`http://localhost:5000/cart/${id}`, {
+    await fetch(`https://flower-shop-server-nu.vercel.app/cart/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: qty }),
@@ -37,7 +37,7 @@ const MyCart = () => {
   };
 
   const removeItem = async (id) => {
-    await fetch(`http://localhost:5000/cart/${id}`, { method: "DELETE" });
+    await fetch(`https://flower-shop-server-nu.vercel.app/cart/${id}`, { method: "DELETE" });
     fetchCart();
     toast.success("Item removed");
   };
@@ -52,7 +52,7 @@ const MyCart = () => {
 
     setOrdering(true);
     try {
-      const res = await fetch("http://localhost:5000/orders", {
+      const res = await fetch("https://flower-shop-server-nu.vercel.app/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -75,7 +75,7 @@ const MyCart = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Order failed");
 
-      await fetch(`http://localhost:5000/cart/clear/${user.email}`, { method: "DELETE" });
+      await fetch(`https://flower-shop-server-nu.vercel.app/cart/clear/${user.email}`, { method: "DELETE" });
       toast.success("Order placed! 🌸");
       navigate(`/order-success/${data.order._id}`);
     } catch (err) {

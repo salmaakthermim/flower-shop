@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { FaUsers, FaShoppingCart, FaBoxOpen, FaMoneyBillWave, FaTruck, FaCheckCircle } from "react-icons/fa";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 
@@ -16,9 +16,9 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     Promise.all([
-      fetch("http://localhost:5000/orders").then(r => r.json()),
-      fetch("http://localhost:5000/users").then(r => r.json()),
-      fetch("http://localhost:5000/flowers").then(r => r.json()),
+      fetch("https://flower-shop-server-nu.vercel.app/orders").then(r => r.json()),
+      fetch("https://flower-shop-server-nu.vercel.app/users").then(r => r.json()),
+      fetch("https://flower-shop-server-nu.vercel.app/flowers").then(r => r.json()),
     ]).then(([orders, users, flowers]) => {
       const revenue = orders.reduce((s, o) => s + (o.totalPrice || 0), 0);
       const pending = orders.filter(o => o.orderStatus === "pending").length;

@@ -1,5 +1,5 @@
-import { useAuth } from "../../../context/AuthContext";
 import { motion } from "framer-motion";
+import { useAuth } from "../../../context/AuthContext";
 import { FaEnvelope, FaUserTag, FaCalendarAlt, FaLeaf, FaShoppingBag, FaCheckCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -17,7 +17,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!email || email === "—") return;
-    fetch(`http://localhost:5000/orders/customer/${email}`)
+    fetch(`https://flower-shop-server-nu.vercel.app/orders/customer/${email}`)
       .then(r => r.json())
       .then(d => setOrders(Array.isArray(d) ? d : []))
       .catch(() => {});

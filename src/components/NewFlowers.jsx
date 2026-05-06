@@ -22,7 +22,7 @@ export default function NewFlowers() {
 
   // ================= FETCH FLOWERS =================
   useEffect(() => {
-    fetch("http://localhost:5000/flowers")
+    fetch("https://flower-shop-server-nu.vercel.app/flowers")
       .then((res) => res.json())
       .then((data) => setFlowers(data));
   }, []);
@@ -42,7 +42,7 @@ export default function NewFlowers() {
     setLoadingCart(true);
 
     const res = await fetch(
-      `http://localhost:5000/cart/${user.email}`
+      `https://flower-shop-server-nu.vercel.app/cart/${user.email}`
     );
     const data = await res.json();
     setCart(data);
@@ -60,7 +60,7 @@ export default function NewFlowers() {
       return;
     }
 
-    await fetch("http://localhost:5000/cart", {
+    await fetch("https://flower-shop-server-nu.vercel.app/cart", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +83,7 @@ export default function NewFlowers() {
   const updateQty = async (id, qty) => {
     if (qty < 1) return;
 
-    await fetch(`http://localhost:5000/cart/${id}`, {
+    await fetch(`https://flower-shop-server-nu.vercel.app/cart/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +96,7 @@ export default function NewFlowers() {
 
   // ================= REMOVE ITEM =================
   const removeItem = async (id) => {
-    await fetch(`http://localhost:5000/cart/${id}`, {
+    await fetch(`https://flower-shop-server-nu.vercel.app/cart/${id}`, {
       method: "DELETE",
     });
 
@@ -144,7 +144,7 @@ export default function NewFlowers() {
       total,
     };
 
-    const res = await fetch("http://localhost:5000/orders", {
+    const res = await fetch("https://flower-shop-server-nu.vercel.app/orders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -161,7 +161,7 @@ export default function NewFlowers() {
 
     // Clear cart after order
     await fetch(
-      `http://localhost:5000/cart/clear/${user.email}`,
+      `https://flower-shop-server-nu.vercel.app/cart/clear/${user.email}`,
       { method: "DELETE" }
     );
 

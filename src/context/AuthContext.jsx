@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
 
   // ── Server-based login (email/password) ──
   const loginUser = async (email, password) => {
-    const res = await fetch("http://localhost:5000/login", {
+    const res = await fetch("https://flower-shop-server-nu.vercel.app/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 
   // ── Server-based register ──
   const registerUser = async (name, email, password, role = "customer") => {
-    const res = await fetch("http://localhost:5000/register", {
+    const res = await fetch("https://flower-shop-server-nu.vercel.app/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password, role }),
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }) => {
       avatar: result.user.photoURL,
     };
 
-    const res = await fetch("http://localhost:5000/google-login", {
+    const res = await fetch("https://flower-shop-server-nu.vercel.app/google-login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(googleUser),

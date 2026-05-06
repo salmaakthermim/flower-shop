@@ -1,6 +1,6 @@
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { FaHeart, FaRegHeart, FaSearch } from "react-icons/fa";
 
 export default function GuestBrowse() {
@@ -14,7 +14,7 @@ export default function GuestBrowse() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/flowers")
+    fetch("https://flower-shop-server-nu.vercel.app/flowers")
       .then(r => r.json())
       .then(d => setFlowers(Array.isArray(d) ? d : []))
       .catch(() => {})

@@ -19,7 +19,7 @@ export default function AllOrders() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch("http://localhost:5000/orders");
+      const res = await fetch("https://flower-shop-server-nu.vercel.app/orders");
       const data = await res.json();
       setOrders(Array.isArray(data) ? data : []);
     } catch { toast.error("Failed to load orders"); }
@@ -29,7 +29,7 @@ export default function AllOrders() {
   useEffect(() => { fetchOrders(); }, []);
 
   const handleStatusUpdate = async (id, status) => {
-    const res = await fetch(`http://localhost:5000/orders/${id}/status`, {
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/orders/${id}/status`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ orderStatus: status }),
@@ -47,7 +47,7 @@ export default function AllOrders() {
       cancelButtonColor: "#6b7280", confirmButtonText: "Delete",
     });
     if (!result.isConfirmed) return;
-    const res = await fetch(`http://localhost:5000/orders/${id}`, { method: "DELETE" });
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/orders/${id}`, { method: "DELETE" });
     if (res.ok) { toast.success("Order deleted"); setOrders(prev => prev.filter(o => o._id !== id)); }
   };
 
@@ -64,7 +64,7 @@ export default function AllOrders() {
 
   const handleDeliveryUpdate = async (e) => {
     e.preventDefault();
-    const res = await fetch(`http://localhost:5000/orders/${deliveryModal._id}/delivery`, {
+    const res = await fetch(`https://flower-shop-server-nu.vercel.app/orders/${deliveryModal._id}/delivery`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(deliveryForm),

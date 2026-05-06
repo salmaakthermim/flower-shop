@@ -1,6 +1,6 @@
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { FaHeart, FaTrash, FaShoppingCart } from "react-icons/fa";
 import toast from "react-hot-toast";
 
@@ -15,7 +15,7 @@ export default function MyWishlist() {
 
   useEffect(() => {
     if (wishlist.length === 0) { setLoading(false); return; }
-    fetch("http://localhost:5000/flowers")
+    fetch("https://flower-shop-server-nu.vercel.app/flowers")
       .then(r => r.json())
       .then(d => setFlowers(Array.isArray(d) ? d.filter(f => wishlist.includes(f._id)) : []))
       .catch(() => {})
@@ -32,7 +32,7 @@ export default function MyWishlist() {
 
   const addToCart = async (flower) => {
     if (!user?.email) { navigate("/login"); return; }
-    await fetch("http://localhost:5000/cart", {
+    await fetch("https://flower-shop-server-nu.vercel.app/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: user.email, productId: flower._id, name: flower.name, price: flower.price, image: flower.image, quantity: 1 }),

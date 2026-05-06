@@ -13,7 +13,7 @@ export default function GuestDashboard() {
   const [flowers, setFlowers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/flowers")
+    fetch("https://flower-shop-server-nu.vercel.app/flowers")
       .then(r => r.json())
       .then(d => setFlowers(Array.isArray(d) ? d.slice(0, 4) : []))
       .catch(() => {});
